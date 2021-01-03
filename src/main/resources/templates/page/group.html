@@ -1,0 +1,83 @@
+{{#layout}}
+
+{{#style}}
+<style>
+.left-section { background-image: url('/img/bg-group-left.jpg');
+	border: 1px solid #ccc; border-left: 0; }
+#btn-create { display: block; }
+</style>
+{{/style}}
+
+<div class="callout secondary small clearfix">
+	<nav role="navigation" class="nav float-left">
+	  <ul class="breadcrumbs">
+	    <li>홈</li>
+	    <li>도움말그룹</li>
+	  </ul>
+	</nav>
+	<div class="button-group float-right">
+	  <a class="button small alert" href="javascript:void(0);" id="btn-delete">삭제</a>
+	  <a class="button small success" href="javascript:void(0);" id="btn-modify">수정완료</a>
+	  <a class="button small primary" href="javascript:void(0);" id="btn-create">등록</a>	
+	</div>
+</div>
+
+<div class="grid-x contents-area">
+	
+	<div class="cell small-3 left-section">
+	</div>
+	
+	<div class="cell small-3" id="group-list-wrapper" style="padding-top: 12px;">
+		<table>
+		  <thead>
+		    <tr>
+		      <th style="font-weight: normal;">도움말그룹</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		  	{{#list}}
+		    <tr>
+		      <td class="btn-list-item" onclick="getCategory(this);" bf-name="{{#name}}{{name}}{{/name}}" bf-category-id="{{groupId}}" bf-order="{{orderNo}}">{{#name}}{{name}}{{/name}}</td>
+		    </tr>
+		    {{/list}}
+		    {{^list}}
+		    <tr>
+		      <td>도움말그룹을 등록해주세요</td>
+		    </tr>
+		    {{/list}}
+		    </tbody>
+		</table>
+		<ul>
+		  <li>
+		  <a class="cell button secondary hollow expanded" href="javascript:void(0);" onclick="getCategory();">
+		    <i class="fi-pencil"></i>&nbsp;새 그룹
+	      </a>
+	      </li>
+      </ul>
+	</div>
+		
+	<div class="cell small-6 bf-detail-area" style="padding-top: 12px;">
+		<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+		<div>
+			<label for="groupId"><i class="fi-link"></i>&nbsp;도움말그룹URI</label>
+			<div class="col-sm-10">
+			  <input type="text" id="groupId" class="form-control" placeholder="영소문자 (공백없음)" value="{{#item}}{{item.uri}}{{/item}}" maxlength="20">
+			</div>
+			<label for="name"><i class="fi-torso"></i>&nbsp;도움말그룹명</label>
+			<div class="col-sm-10">
+			  <input type="text" id="name" class="form-control" placeholder="한글이름" value="{{#item}}{{item.name}}{{/item}}" maxlength="20">
+			</div>
+			<label for="orderNo"><i class="fi-list-number"></i>&nbsp;정렬순서</label>
+			<div class="col-sm-10">
+			  <input type="text" id="orderNo" class="form-control" placeholder="숫자 (0~255)" value="{{#item}}{{item.orderNo}}{{/item}}" maxlength="3">
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+{{#script}}
+<script src="/page/group.js"></script>
+{{/script}}
+
+{{/layout}}

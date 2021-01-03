@@ -1,0 +1,102 @@
+{{#layout}}
+
+{{#style}}
+<style>
+.tree-wrapper { background-image: url('/img/bg-tree-gray.jpg'); border-right: 1px solid #ccc; overflow-y: auto; }
+.context-menu-list.context-menu-root {
+  border-radius: 0; -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.5); box-shadow: 1px 1px 2px rgba(0,0,0,.5); }
+.context-menu-item { font-size: 13px; font-family: '맑은고딕'; }
+.contents-grid-wrapper { height: 100%; }
+.contents-wrapper { border: 0; padding-left: 16px; overflow-y: hidden; height: 100%; padding-left: 0; }
+#contents-detail { border: 0; }
+.select-row { padding: 0; margin: 3px auto; }
+.select-row i { cursor: pointer; color: #05854A; font-size: 26px; margin-top: 4px; }
+#btn-create { float: right; }
+.tree-btn { padding: 6px; min-width: 32px; font-size: 16px; }
+#sel_category, .tree-btn, .callout .button-group { margin-bottom: 0; }
+#editor-wrapper { display: none; }
+span.drag-source { border: 1px solid grey; border-radius: 3px; padding: 2px; background-color: silver; }
+span.fancytree-node.fancytree-drag-source { outline: 1px dotted grey; }
+span.fancytree-node.fancytree-drop-accept { outline: 1px dotted green; }
+span.fancytree-node.fancytree-drop-reject { outline: 1px dotted red; }
+</style>
+{{/style}}
+
+<div class="callout secondary small">
+  <div class="grid-x">
+    <div class="cell small-3">
+	<nav role="navigation" class="nav" style="width: 100%;">
+	  <ul class="breadcrumbs">
+	    <li>홈</li>
+	    <li>도움말작성</li>
+	  </ul>
+	</nav>
+	</div>
+	<div id="wrapper-group-sel" class="cell small-5">
+		<select id="sel_category" onchange="onSelectChanged(this);">
+		    <option value="">----- 도움말그룹 선택 -----</option>
+			{{#list}}
+		    <option value="{{groupId}}">{{#name}}{{name}}{{/name}}</option>
+			{{/list}}
+		  </select>
+		  <i class="button secondary hollow fi-plus tree-btn" id="btn-expand-all" title="전체메뉴펼치기"></i>
+		  <i class="button secondary hollow fi-minus tree-btn" id="btn-collapse-all" title="전체메뉴접기"></i>
+	</div>
+	<div class="cell small-4">
+  	  	<div class="button-group float-right">
+		  <a class="button small alert" href="javascript:void(0);" id="btn-delete">삭제</a>
+		  <a class="button small primary hollow" href="javascript:void(0);" id="btn-download">다운로드</a>
+		  <a class="button small primary" href="javascript:void(0);" id="btn-pdf-upload" data-open="bf-modal-comment">PDF업로드</a>
+		  <!-- 
+		  <a class="button small primary" href="javascript:void(0);" id="btn-modify">수정</a>
+		  <a class="button small success" href="javascript:void(0);" id="btn-modify-complete">수정완료</a>
+		  -->
+		  <form id="fileFrm" method="post" enctype="multipart/form-data">
+		  	<input id="pdfFile" type='file' hidden onchange="handlePdf(this.files[0]);" accept=".pdf" />
+	  	  </form>
+		</div>
+	</div>
+  </div>
+</div>
+
+<div class="grid-x contents-grid-wrapper">
+	
+	<!-- 좌측 컨텐츠그룹 선택 및 메뉴 구조 TREE -->
+	<div class="cell small-3 tree-wrapper">
+		<div id="tree" style="display: none;"></div>
+	</div>
+	
+	<!-- 컨텐츠 상세내용 --> <!-- 706px for A4 -->
+	<div class="cell small-9 contents-wrapper">
+	  <div class="grid-x" style="height: calc(100% - 92px);">
+	    <iframe id="contents-detail" class="cell" width="100%" height="100%" border="0"></iframe>
+	    <!-- 
+		<div id="editor-wrapper" class="cell" style="height: 100%;">
+	      <div class="row" style="height: 100%;">
+	        <div class="col-12 form-group" style="height: 100%;">
+			  <textarea id="synapEditor" name="content"></textarea>
+			</div>
+		  </div>
+		</div>
+		-->
+	  </div>
+    </div>
+	
+</div>
+
+<iframe id="ifrm" style="display: none;"></iframe>
+
+{{#script}}
+<script src="/synapeditor/synapeditor.config.js"></script>
+<script src="/synapeditor/synapeditor.min.js"></script>
+<script src="/synapeditor/externals/SEDocModelParser/SEDocModelParser.min.js"></script>
+<script src="/synapeditor/externals/SEShapeManager/SEShapeManager.min.js"></script>
+<script src="/synapeditor/plugins/icons/basicColorIcons.js"></script>
+<script src="/synapeditor/plugins/shapeEditor/shapeEditor.min.js"></script>
+<script src="/synapeditor/plugins/characterPicker/characterPicker.min.js"></script>
+<script src="/page/content.js"></script>
+<script>
+</script>
+{{/script}}
+
+{{/layout}}

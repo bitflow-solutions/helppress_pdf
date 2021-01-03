@@ -1,0 +1,123 @@
+{{#layout}}
+
+{{#style}}
+<title>415</title>
+<style>
+  .container {
+  }
+
+  .Rectangle {
+    width: 100%;
+    height: 518px;
+    background-color: #ffffff;
+  }
+
+  .icon-null {
+    width: 60px;
+    height: 60px;
+    padding-top: 100px;
+    margin: auto;
+    object-fit: contain;
+  }
+
+  .msg-container {
+    width: 100%;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: -0.57px;
+    text-align: center;
+    padding-top: 5%;
+  }
+
+  .main-msg p {
+    font-size: 17px;
+    color: #1a1a1a;
+  }
+
+  .sub-msg {
+    font-size: 15px;
+    color: #a3a3a3;
+    margin: 10px auto;
+  }
+
+  .text-blue {
+    color: #189bd4;
+  }
+
+  .btn-to-home {
+    width: 140px;
+    height: 40px;
+    border-radius: 19.5px;
+    background-color: #1d8fcb;
+    color: white;
+    margin: auto;
+  }
+
+  /*.down {*/
+  /*    width: 14px;*/
+  /*    height: 10px;*/
+  /*    object-fit: contain;*/
+  /*    !*transform: rotate(-90deg);*!*/
+  /*    opacity: 0.37;*/
+  /*    margin: 5px auto;*/
+  /*}*/
+
+  .prev-btn-wrapper  {
+    margin: 40px auto;
+    width: 140px;
+  }
+
+  /*.prev-btn-wrapper-2 {*/
+  /*    margin: auto;*/
+  /*    width: 100px;*/
+  /*    padding-left: 15px;*/
+  /*}*/
+
+  /*.prev {*/
+  /*    width: 51%;*/
+  /*    height: 20%;*/
+  /*    font-size: 14px;*/
+  /*    font-weight: normal;*/
+  /*    font-stretch: normal;*/
+  /*    font-style: normal;*/
+  /*    line-height: normal;*/
+  /*    letter-spacing: -0.3px;*/
+  /*    text-align: center;*/
+  /*    color: #888888;*/
+  /*}*/
+</style>
+{{/style}}
+<header id="header">
+  <h3>HTTP 415</h3>
+</header>
+<div class="container">
+  <div class="rectangle-wrapper"></div>
+  <div class="Rectangle">
+    <div class="icon-null">
+      <img src="/img/error/icon-null.png" srcset="/img/error/icon-null@2x.png 2x, /img/error/icon-null@3x.png 3x"
+           alt="mark" style="border: red;">
+    </div>
+    <div class="msg-container">
+      <div class="main-msg">
+        <p class="err-msg">지원되지 않는 미디어 유형 <b class="text-blue">415</b></p>
+      </div>
+      <div class="sub-msg">
+        <p class="err-msg-grey">지원되지 않는 미디어 유형입니다. <br>관리자에게 문의 바랍니다.</p>
+      </div>
+    </div>
+    <div class="prev-btn-wrapper">
+      <button id="toHome" class="btn-to-home" type="button" onclick="window.location.href = '/digital/login'">홈으로</button>
+    </div>
+    <!--        <div class="prev-btn-wrapper-2">-->
+    <!--            <img src="/img/error/down.png" srcset="/img/error/down@2x.png 2x, /img/error/down@3x.png 3x"-->
+    <!--                 alt="" class="down">-->
+    <!--            <a href="" class="prev" style="text-decoration: underline; margin: 25px auto;">-->
+    <!--                이전으로-->
+    <!--            </a>-->
+    <!--        </div>-->
+  </div>
+</div>
+
+{{/layout}}

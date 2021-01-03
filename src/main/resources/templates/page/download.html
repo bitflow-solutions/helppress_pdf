@@ -1,0 +1,126 @@
+{{#layout}}
+
+{{#style}}
+<style>
+.bf-body-wrapper { height: calc(100% - 100px); }
+.list-table th, .list-table td { border: 1px solid #ddd; border-collapse: collapse; font-size: 12px; }
+.list-row { width: 100%; height: calc(100% - 150px); }
+.list-row .col { height: 100%; overflow-y: auto; padding-right: 0; }
+.list-table th, .list-table td { color: #555; font-weight: normal; }
+.list-table td { font-size: 12px; border: 1px solid #ddd; border-collapse: collapse; padding-left: 6px; padding-right: 6px; }
+.contents-area div.cell { height: calc(100% - 32px); overflow-y: auto; }
+.callout a.button { display: block; }
+[type='file'], [type='checkbox'], [type='radio'] { margin: 0; }
+tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
+</style>
+{{/style}}
+
+<div class="callout secondary small clearfix">
+	<nav role="navigation" class="nav float-left">
+	  <ul class="breadcrumbs">
+	    <li>홈</li>
+	    <li>다운로드</li>
+	  </ul>
+	</nav>
+	<div class="button-group float-right">
+		<a class="button small success hollow" id="btn-download-all">전체다운로드</a>
+		<a class="button small secondary hollow" id="btn-download-changed" {{^clist}}disabled{{/clist}}>선택다운로드</a>
+		<a class="button small success hollow" id="btn-record-release">배포버전처리</a>
+	</div>
+</div>
+
+<div class="grid-x" style="padding: 10px 0 0;">
+	<div class="cell small-7"><h5 class="text-center">변경된 파일</h5></div>
+	<div class="cell small-5"><h5 class="text-center">배포 이력</h5></div>
+</div>
+
+<div class="grid-x contents-area">
+
+	<!-- 1) 변경파일 -->
+	<div class="cell small-8" style="padding: 0 10px 0 10px;">
+		<table class="list-table">
+			<colgroup>
+				<col width="7%" />
+				<col width="7%" />
+				<col />
+				<col width="20%" />
+				<col width="10%" />
+				<col width="14%" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th><input type="checkbox" id="check-all-file"  /></th>
+					<th>작업</th>
+					<th>제목</th>
+					<th>파일명</th>
+					<th>담당자</th>
+					<th>최종변경일시</th>
+				</tr>
+			</thead>
+			<tbody>
+   				{{#clist}}
+				<tr>
+					<td class="text-center"><input type="checkbox" id="{{fileId}}" class="changed-files" name="fileIds" value="{{fileId}}" {{#del}}disabled{{/del}}/></td>
+					<td class="text-center"><i class="{{status}}"></i></td>
+					<td>{{#title}}{{title}}{{/title}}</td>
+					<td>{{#filePath}}{{filePath}}{{/filePath}}</td>
+			 		<td class="text-center" >{{#userid}}{{userid}}{{/userid}}</td>
+					<td class="text-center">{{updDtStr}}</td>
+				</tr>
+				{{/clist}}
+   				{{^clist}}
+				<tr>
+					<td class="text-center" colspan="3">내역이 없습니다</td>
+				</tr>
+				{{/clist}}
+			</tbody>
+		</table>
+	</div>
+	
+	<!-- 2) 배포이력 -->
+	<div class="cell small-4 left-section" style="padding: 0 10px 0 20px;">
+		<table class="list-table">
+			<colgroup>
+				<col width="13%" />
+				<col />
+				<col width="20%" />
+				<col width="30%" />
+				<col width="12%" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th>버전</th>
+					<th>구분</th>
+					<th>담당자</th>
+					<th>일시</th>
+					<th>파일</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#rlist}}
+				<tr>
+					<td class="text-center">v{{id}}</td>
+					<td class="text-center">{{typeKr}}</td>
+			 		<td class="text-center" >{{#userid}}{{userid}}{{/userid}}</td>
+			 		<td class="text-center" >{{updDtStr}}</td>
+					<td class="text-center"><a href="javascript:downloadFromHistory({{id}})"><i class="fi-archive"></i></a></td>
+				</tr>
+				{{/rlist}}
+				{{^rlist}}
+				<tr>
+					<td class="text-center" colspan="3">내역이 없습니다</td>
+				</tr>
+				{{/rlist}}
+			</tbody>
+		</table>
+	</div>
+	
+</div>
+
+<iframe id="ifrm" style="display: none;"></iframe>
+
+{{#script}}
+<script src="/page/release.js"></script>
+{{/script}}
+
+{{/layout}}

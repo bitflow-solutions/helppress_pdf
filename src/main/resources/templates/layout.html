@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+<title>DB금융투자 :: 온라인매뉴얼</title>
+<link href="/img/favicon.ico" rel="shortcut icon" type="image/ico" />
+<link rel="stylesheet" href="css/noto-sans-kr.css">
+<link rel="stylesheet" href="css/foundation.css">
+<link rel="stylesheet" href="foundation-icons/foundation-icons.css" />
+<link rel="stylesheet" href="/css/context.standalone.css">
+<link rel="stylesheet" href="/jquery/contextmenu/jquery.contextMenu.min.css">
+<link rel="stylesheet" href="/jquery/fancytree/skin-lion/ui.fancytree.css">
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="/synapeditor/synapeditor.min.css">
+<link rel="stylesheet" href="/synapeditor/plugins/shapeEditor/shapeEditor.min.css">
+<link rel="stylesheet" href="/synapeditor/plugins/characterPicker/characterPicker.min.css">
+<style>
+
+</style>
+{{{layout.style}}}
+</head>
+
+<body>
+
+<div class="grid-y medium-grid-frame">
+
+<!-- Navigation -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <ul class="menu" data-responsive-menu="accordion">
+      <li class="menu-text">			
+      	<div class="logo-img"></div>
+      	<div class="logo-text">온라인매뉴얼</div>
+	  </li>
+      <li class="{{#tab1}}{{tab1}}{{/tab1}}"><a href="/group">도움말그룹</a></li>
+      <li class="{{#tab2}}{{tab2}}{{/tab2}}"><a href="/content">도움말작성</a></li>
+      <li class="{{#tab3}}{{tab3}}{{/tab3}}"><a href="/history">이력조회</a></li>
+      <li class="{{#tab4}}{{tab4}}{{/tab4}}"><a href="/download">다운로드</a></li>
+    </ul>
+  </div>
+  <div class="top-bar-right">
+    <ul class="menu">
+      <li class="{{#tab5}}{{tab5}}{{/tab5}}"><a href="/user">사용자관리</a></li>
+      <li><a class="button secondary hollow" data-open="bf-modal-user">{{userid}}님</a></li>
+    </ul>
+  </div>
+</div>
+<!-- /Navigation -->
+
+<div class="bf-body-wrapper">{{{layout.body}}}</div>
+
+<div class="cell shrink footer">
+  <div class="grid-x">
+	  <div class="footer-text cell small-10 text-center">© 2020 DB금융투자 Co., Ltd.</div>
+	  <div class="cell small-2"><img src="/img/logo.svg" style="width: 105px; margin-right: 36px;" class="float-right"></div>
+  </div>
+</div>
+
+	<!-- Modal #user -->
+	<div class="reveal tiny" id="bf-modal-user" data-reveal>
+	  <p>온라인 매뉴얼에서</p><p>로그아웃 하시겠습니까?</p>
+	  <button class="close-button" data-close aria-label="Close modal" type="button">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+	  <br>
+	  <div class="button-group float-right">
+		<a class="button secondary hollow" id="btn-reveal-close">아니오</a>
+		<a class="button alert" href="javascript:doLogout();">예</a>
+	  </div>
+	</div>
+	
+	<!-- Modal #comment -->
+	<div class="reveal tiny" id="bf-modal-comment" data-reveal>
+	  <p>도움말 변경 사유 (50자 이내)</p>
+	  <p>※ 내용을 입력하고 "확인" 버튼을 누르면 업로드 창이 열립니다</p>
+	  <input type="text" id="bf-content-comment" maxlength="50" />
+	  <button class="close-button" data-close aria-label="Close modal" type="button">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+	  <br>
+	  <div class="button-group float-right">
+		<a class="button secondary hollow" id="btn-comment-close">취소</a>
+		<a class="button alert" href="javascript:doUpload();">확인</a>
+	  </div>
+	</div>
+	
+	<div class="reveal tiny" id="snackbar" data-reveal>
+		<button class="close-button" data-close aria-label="Close modal" type="button">
+		  <span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+	<div class="spinner">
+	  <div class="rect1"></div>
+	  <div class="rect2"></div>
+	  <div class="rect3"></div>
+	  <div class="rect4"></div>
+	  <div class="rect5"></div>
+	</div>
+
+</div>
+
+<script src="/jquery/jquery-3.5.1.min.js"></script>
+<script src="/jquery/jquery-ui.min.js"></script>
+<script src="/jquery/fancytree/jquery.fancytree-all.js"></script>
+<script src="/jquery/fancytree/jquery.fancytree-all-deps.min.js"></script>
+<script src="/jquery/fancytree/modules/jquery.fancytree.edit.js"></script>
+<script src="/jquery/fancytree/modules/jquery.fancytree.dnd5.js"></script>
+<script src="/jquery/contextmenu/jquery.contextMenu.min.js"></script>
+<script src="/js/vendor/foundation.min.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/sockjs.min.js"></script>
+<script src="/js/stomp.min.js"></script>
+<script>
+window.alert = function(message) {
+	$("#snackbar").html('<p>' + message + '</p><button class="close-button" data-close aria-label="Close modal" type="button"> <span aria-hidden="true">&times;</span> </button>')
+		.foundation('open');
+	setTimeout(function() {
+		$("#snackbar").html("").foundation('close');
+	}, 2500);
+}
+function doLogout() {
+	location.href = "/logout";
+}
+$("#btn-reveal-close").click(function() {
+	$("#bf-modal-user").foundation('close');
+});
+$("#btn-comment-close").click(function() {
+	$("#bf-modal-comment").foundation('close');
+});
+</script>
+{{{layout.script}}}
+	
+</body>
+</html>
