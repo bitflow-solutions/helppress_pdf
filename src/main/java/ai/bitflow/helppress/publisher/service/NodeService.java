@@ -155,7 +155,7 @@ public class NodeService {
 		logger.debug("found node " + foundNode);
 		
 		// 변경이력 저장 - 도움말 또는 그룹
-		chdao.addHistory(userid, ApplicationConstant.TYPE_GROUP, ApplicationConstant.METHOD_MODIFY, params.getTitle(), ret.getGroupId() + ".html");
+		chdao.addHistory(userid, ApplicationConstant.TYPE_GROUP, ApplicationConstant.METHOD_MODIFY, params.getTitle(), ret.getGroupId() + ".html", null);
 		
 		return ret;
 	}

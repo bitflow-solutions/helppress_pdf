@@ -82,7 +82,7 @@ public class ContentsGroupService {
 		fdao.makeAllContentGroupHTML(list);
 		
 		// 변경이력 저장
-		chdao.addHistory(userid, type, method, "온라인도움말", "index.html");
+		chdao.addHistory(userid, type, method, "온라인도움말", "index.html", null);
 		chdao.addHistory(userid, type, method, params.getName(), params.getGroupId() + ".html", null);
 
 		return ret;
