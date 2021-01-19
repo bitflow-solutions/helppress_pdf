@@ -45,6 +45,10 @@ public class NodeService {
 	@Autowired
 	private FileDao fdao;
 	
+	@Autowired
+	private ContentsGroupRepository grepo;
+	
+	
 	/**
 	 * 새 "빈" 컨텐츠 추가
 	 * e.g.) String textOnly = Jsoup.parse(params.getContent()).text();
@@ -186,9 +190,19 @@ public class NodeService {
 		} else {
 			return ret;
 		}
-		logger.debug("found node " + foundNode);
 		
+		logger.debug("found node " + foundNode);
 		String title = ndao.getGroupTitle(params);
+		
+		Optional<ContentsGroup> row = grepo.findById(params.getGroupId());
+		ContentsGroup item1 = null;
+		if (!row.isPresent()) {
+			return null;
+		} else {
+			item1 = row.get();
+			fdao.makeOneContentGroupHTML(item1);
+		}
+		
 		// 변경이력 저장
 		chdao.addHistory(userid, type, method, title, filePath, null);
 

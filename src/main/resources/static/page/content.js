@@ -111,6 +111,7 @@ function initTree() {
 	  var node = data.node;
 	  selectedContentId = node.key;
 	  if (!node.folder || node.folder===false) {
+		// 폴더가 아닌경우
 	    selectedContentTitle = node.title;
 	  	$("#btn-delete").show();
 	  	$("#btn-download").show();
@@ -121,6 +122,7 @@ function initTree() {
 		*/
 	  	// 도움말 표시
 	  	loadPage(node.key);
+		$("#contents-detail").scrollTop();
 	  } else {
 	    // 폴더인 경우
 	  	$("#btn-delete").show();
@@ -182,7 +184,7 @@ function initEvents() {
         },
 	    items: {
 	        rename: {name: "제목변경 [F2]", callback: editTitle },
-	        modify: {name: "수정", callback: editContent },
+	        /*modify: {name: "수정", callback: editContent },*/
 	        deletecontent: {name: "삭제", callback: deleteContent },
 	        downloadcontent: {name: "다운로드", callback: downloadContent }
 	    },

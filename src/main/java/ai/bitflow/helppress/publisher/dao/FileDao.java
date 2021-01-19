@@ -23,13 +23,17 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.openhtmltopdf.extend.FSStream;
 import com.openhtmltopdf.extend.HttpStreamFactory;
 
 import ai.bitflow.helppress.publisher.constant.ApplicationConstant;
 import ai.bitflow.helppress.publisher.domain.Contents;
 import ai.bitflow.helppress.publisher.domain.ContentsGroup;
+import ai.bitflow.helppress.publisher.repository.ContentsGroupRepository;
 import ai.bitflow.helppress.publisher.vo.req.ContentsReq;
+import ai.bitflow.helppress.publisher.vo.tree.Node;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -47,6 +51,9 @@ public class FileDao {
 
     @Autowired
     private SpringTemplateEngine tengine;
+    
+    @Autowired
+	private ContentsGroupRepository grepo;
     
     @PostConstruct
     public void init() {
@@ -215,7 +222,7 @@ public class FileDao {
 			// Write to HTML file
 			Context ctx = new Context();
 			ctx.setVariable("group", list);
-			ctx.setVariable("tree",  item1.getTree());
+			ctx.setVariable("tree",  new Gson().fromJson(item1.getTree(), new TypeToken<List<Node>>(){}.getType()));
 			String htmlCodes = this.tengine.process("hp-group-template.html", ctx);
 			makeNewContentGroupTemplate(item1, htmlCodes);
 			item1.setClassName("");
@@ -227,6 +234,18 @@ public class FileDao {
 			}
 		}
 		return true;
+	}
+	
+	public void makeOneContentGroupHTML(ContentsGroup item1) {
+		List<ContentsGroup> list = grepo.findAll();
+		item1.setClassName("is-active");
+		// Write to HTML file
+		Context ctx = new Context();
+		ctx.setVariable("group", list);
+		ctx.setVariable("tree",  new Gson().fromJson(item1.getTree(), new TypeToken<List<Node>>(){}.getType()));
+		String htmlCodes = this.tengine.process("hp-group-template.html", ctx);
+		makeNewContentGroupTemplate(item1, htmlCodes);
+		item1.setClassName("");
 	}
 	
 	/**
@@ -278,6 +297,8 @@ public class FileDao {
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
 					UPLOAD_ROOT_PATH + File.separator + item.getGroupId() + ".html"), "UTF-8"));
+			String htmlpath = new File(UPLOAD_ROOT_PATH + File.separator + item.getGroupId() + ".html").getAbsolutePath();
+			logger.debug("creating help group html " + htmlpath);
 			writer.write(htmlCodes);
 		    return true;
 		} catch (IOException e) {

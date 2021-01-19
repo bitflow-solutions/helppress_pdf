@@ -1,7 +1,7 @@
 html, body, .bf-body-wrapper { height: 100%; font-family: "Noto Sans Korean", "맑은 고딕", "돋움", Arial; color: #555; }
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 { font-family: "Noto Sans Korean", "맑은 고딕", "돋움", Arial; }
 ul.fancytree-container, span.fancytree-selected span.fancytree-title, span.fancytree-active span.fancytree-title { 
-	font-family: "Noto Sans Korean"; }
+	font-family: "맑은 고딕", "돋움"; }
 .bf-body-wrapper { position: fixed; top: 54px; width: 100%; height: calc(100% - 54px); }
 #editor-wrapper { padding: 12px; }
 .callout .button-group .button + .button { margin-left: 3px; }
@@ -34,11 +34,13 @@ span.fancytree-node { height: 21px; }
 ul.fancytree-container li { min-height: 21px!important; }
 span.fancytree-icon { height: 16px; }
 span.fancytree-title { display: initial!important; border: 0!important; line-height: 23px; color: #555; }
+.fancytree-expander { display: none !important; }
 .fancytree-title input { display: inline; min-width: 180px; height: 21px; font-size: 13.333px; padding: 0; color: #3875D7;
 	border: 2px solid #3875D7; border-radius: 0; }
 span.fancytree-focused, span.fancytree-title { outline: none!important; /* background-color: inherit; */ } 
 span.fancytree-selected span.fancytree-title, span.fancytree-active span.fancytree-title { background-color: inherit; }
 span.fancytree-icon, span.fancytree-checkbox, span.fancytree-expander, span.fancytree-custom-icon { margin-top: 3px!important; }
+.fancytree-container > li > span > .fancytree-title { font-weight: bold; }
 .callout a.button { display: none; }
 .cell.shrink.footer { background-color: white; border-top: 1px solid #ccc; z-index: 1; position: fixed; bottom: 0; 
 	height: 48px; padding-top: 7px; background-image: url('../img/bg-footer-right.jpg');
@@ -66,7 +68,7 @@ table td.btn-list-item:hover { background-color: #77b2d8; cursor: pointer; }
 .top-bar, .top-bar ul { background-color: white; }
 .top-bar-right li:last-child { margin-left: 3px; }
 .menu .menu-text { width: 252px; padding: 0 1rem; display: inline-flex; }
-.logo-img { background-image: url('../img/logo.svg'); width: 120px; height: 36px; }
+.logo-img { background-image: url('../img/ic-happy.png'); background-size: contain; width: 108px; height: 35px; }
 .logo-text { margin-top: 11px;  }
 .menu .menu-text { font-weight: normal; }
 .menu .is-active { background-image: url('/img/bg-underline.gif'); background-position: bottom; background-repeat: no-repeat; }

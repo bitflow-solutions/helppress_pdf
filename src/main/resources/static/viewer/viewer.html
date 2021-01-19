@@ -11,17 +11,24 @@
 <link rel="resource" type="application/l10n" href="locale/locale.properties">
 <style>
 body { background: white; }
-/* .toolbar { display: none; } */
-#viewerContainer { top: 12px; }
+.toolbar { display: none; }
+#viewerContainer { top: 0; }
+#errorWrapper { width: calc(100% - 44px); height: 100%; background: #f7f7f7; }
+#errorWrapper > img { margin: auto; position: absolute; left: calc(50% - 312px); top: calc(50% - 259px); }
+.loadingInProgress #errorWrapper { top: 0; }
 </style>
 <script src="../build/pdf.js"></script>
 <script>
 pdfDefaultUrl = "compressed.tracemonkey-pldi-09.pdf";
+function scrolltop() {
+	// document.querySelector('#viewerContainer').scrollTo({top: 0});
+	// console.log('scrolltop ' + document.querySelector('#viewer').scrollTop);
+}
 </script>
 <script src="viewer.js"></script>
 </head>
 
-<body tabindex="1" class="loadingInProgress">
+<body tabindex="1" class="loadingInProgress" onload="scrolltop();">
     <div id="outerContainer">
 
       <div id="sidebarContainer">
@@ -270,7 +277,8 @@ pdfDefaultUrl = "compressed.tracemonkey-pldi-09.pdf";
         </div>
 
         <div id="errorWrapper" hidden='true'>
-          <div id="errorMessageLeft">
+          <img src="../img/bg_empty.png">
+          <div id="errorMessageLeft" style="display: none;">
             <span id="errorMessage"></span>
             <button id="errorShowMore" data-l10n-id="error_more_info">
               More Information
@@ -279,13 +287,13 @@ pdfDefaultUrl = "compressed.tracemonkey-pldi-09.pdf";
               Less Information
             </button>
           </div>
-          <div id="errorMessageRight">
+          <div id="errorMessageRight" style="display: none;">
             <button id="errorClose" data-l10n-id="error_close">
               Close
             </button>
           </div>
-          <div class="clearBoth"></div>
-          <textarea id="errorMoreInfo" hidden='true' readonly="readonly"></textarea>
+          <div class="clearBoth" style="display: none;"></div>
+          <textarea id="errorMoreInfo" hidden='true' readonly="readonly" style="display: none;"></textarea>
         </div>
       </div> <!-- mainContainer -->
 

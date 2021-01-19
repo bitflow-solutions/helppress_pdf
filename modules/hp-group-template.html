@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-<title>DB금융투자 HTS 도움말</title>
+<title>happy+ 도움말</title>
 <link href="./resources/img/favicon.ico" rel="shortcut icon" type="image/ico" />
 <link rel="stylesheet" href="./resources/css/noto-sans-kr.css">
 <link rel="stylesheet" href="./resources/css/foundation.css">
@@ -17,7 +17,6 @@
 </head>
 
 <body>
-
 
 <div class="grid-y medium-grid-frame">
 	
@@ -33,7 +32,6 @@
 		    <ul class="menu" data-responsive-menu="accordion">
 		      <li class="menu-text">			
 		      	<div class="logo-img"></div>
-		      	<div class="logo-text">온라인매뉴얼</div>
 			  </li>
 		      <li th:each="item : ${group}" th:class="|${item.className}|" >
 		      	<a th:href="|./${item.groupId}.html|" th:text="${item.name}"></a>
@@ -52,7 +50,7 @@
 			<div id="search-wrapper">
 				<input id="input-search" name="search" placeholder="검색어 입력" autocomplete="off">
 				<button id="btnResetSearch">&times;</button>
-				<i class="fi-magnifying-glass"></i>
+				<img id="img-search" src="./resources/img/ic-search.png">
 				<span id="matches"></span>
 			</div>
 			<div id="tree"></div>
@@ -60,7 +58,7 @@
 		
 		<!-- 컨텐츠 상세내용 --> <!-- 706px for A4 -->
 		<div class="cell small-9 contents-wrapper">
-		  <div class="grid-x" style="height: calc(100% - 7px);">
+		  <div class="grid-x" style="height: 100%;">
 		    <iframe id="contents-detail" name="ifrm" class="cell" width="100%" height="100%" frameborder="0" border="0" style="border:0;"></iframe>
 		  </div>
 	    </div>
@@ -71,8 +69,11 @@
 	
 	<div class="cell shrink footer">
 	  <div class="grid-x">
-		  <div class="footer-text cell small-10 text-center">© 2020 DB금융투자 Co., Ltd.</div>
-		  <div class="cell small-2"><img src="./resources/img/logo.svg" style="width: 105px; margin-right: 36px;" class="float-right"></div>
+		  <div class="footer-text cell small-10 text-left">
+		  	<p>위 내용은 제도변경 또는 성능개선 등의 사유로 사전예고없이 변경될 수 있습니다.</p>
+		  	<p>COPYRIGHT TO DB금융투자 Co., Ltd. ALL RIGHTS RESERVED.</p>
+		  </div>
+		  <div class="cell small-2"><img src="./resources/img/logo.svg" style="width: 105px; margin-right: 36px; margin-top: 3px;" class="float-right"></div>
 	  </div>
 	</div>
 
@@ -112,12 +113,13 @@ function goHashLocation() {
 	if (key && key.length>0) {
 	  var selectedNode = _tree.getNodeByKey(key);
 	  selectedNode.setActive();
-	  $("#contents-detail").attr("src", key + ".html");
+	  // $("#contents-detail").attr("src", key + ".html");
+      $("#contents-detail").attr("src", "resources/viewer/viewer.html?file=" + key + ".pdf");
 	} else {
 		$.ui.fancytree.getTree().visit(function(node) {
 		  if (typeof(node.folder)=='undefined') {
 			  node.setActive();
-			  $("#contents-detail").attr("src", node.key + ".html");
+			  $("#contents-detail").attr("src", "resources/viewer/viewer.html?file=" + key + ".pdf");
 			  location.href = "#" + node.key;
 			  return false;
 		  }
@@ -152,17 +154,18 @@ function initTree() {
 	},
     checkbox: false,
     selectMode: 3,
-    source: JSON.parse(SOURCE),
+    source: SOURCE, // JSON.parse(SOURCE),
     nodata: '검색된 도움말이 없습니다',
     click: function(e, data){
       var node = data.node;
       var key = node.key;
-      if (typeof(node.folder)==='undefined' && key) {
-    	  $("#contents-detail").attr("src", key + ".html")
+      console.log('click ' + key + ' typeof(node.folder) ' + typeof(node.folder));
+      if (node.folder) {
+    	  // node.toggleExpanded();
+      } else {
+	      $("#contents-detail").attr("src", "resources/viewer/viewer.html?file=../../" + key + ".pdf");
     	  location.href = "#" + key;
-      } else if (node.folder) {
-    	  node.toggleExpanded();
-      }
+      } 
     },
     close: function(e, data){
       initEvents();
