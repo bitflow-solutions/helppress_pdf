@@ -161,7 +161,7 @@ function initTree() {
       var key = node.key;
       console.log('click ' + key + ' typeof(node.folder) ' + typeof(node.folder));
       if (node.folder) {
-    	  // node.toggleExpanded();
+    	  node.toggleExpanded();
       } else {
 	      $("#contents-detail").attr("src", "resources/viewer/viewer.html?file=../../" + key + ".pdf");
     	  location.href = "#" + key;

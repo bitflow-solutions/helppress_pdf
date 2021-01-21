@@ -148,8 +148,7 @@ public class ViewController {
 		List<ChangeHistory> hlist  = rservice.getHistories();
 		List<ChangeHistory> clist  = rservice.getAllChangesExcludeReleaseOrderByNameAsc();
 		
-		logger.debug("clist " + clist.toString());
-		
+//		logger.debug("clist " + clist.toString());
 		mo.addAttribute("clist", clist);
 		mo.addAttribute("hlist", hlist);
 		

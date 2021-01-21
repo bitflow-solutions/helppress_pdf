@@ -64,7 +64,7 @@ public class FileDao {
     	FileTemplateResolver resolver = new FileTemplateResolver();
     	resolver.setCharacterEncoding("UTF-8");
         resolver.setPrefix(EXT_TEMPLATE_PATH);
-        resolver.setSuffix(".html");
+        resolver.setSuffix(ApplicationConstant.EXT_HTML);
         resolver.setCacheable(false);
         return resolver;
     }
@@ -86,7 +86,7 @@ public class FileDao {
 		FileOutputStream fop = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-					UPLOAD_ROOT_PATH + File.separator + idstring + ".html"), "UTF-8"));
+					UPLOAD_ROOT_PATH + File.separator + idstring + ApplicationConstant.EXT_HTML), "UTF-8"));
 			writer.write(getHeader(item.getTitle()));
 			if (item.getContent()!=null) {
 				writer.write(item.getContent());
@@ -129,7 +129,7 @@ public class FileDao {
 		 
 		BufferedWriter writer = null;
 		FileOutputStream fop = null;
-		String destHtmlFilename = UPLOAD_ROOT_PATH + String.format("%05d" , item.getId()) + ".html";
+		String destHtmlFilename = UPLOAD_ROOT_PATH + String.format("%05d" , item.getId()) + ApplicationConstant.EXT_HTML;
 //		String destPdfFilename  = UPLOAD_ROOT_PATH + String.format("%05d" , item.getId()) + ".pdf";
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(destHtmlFilename), "UTF-8"));
@@ -227,7 +227,7 @@ public class FileDao {
 			makeNewContentGroupTemplate(item1, htmlCodes);
 			item1.setClassName("");
 			if (i==0) {
-				ctx.setVariable("targetHtml", item1.getGroupId() + ".html");
+				ctx.setVariable("targetHtml", item1.getGroupId() + ApplicationConstant.EXT_HTML);
 				String indexHtmlCodes = this.tengine.process("hp-index-redirection.html", ctx);
 				// 첫번째 도움말그룹으로 포워딩 할 index.html 생성
 				makeNewIndexRedirectionHtml(indexHtmlCodes);
@@ -254,7 +254,7 @@ public class FileDao {
 	 * @return
 	 */
 	public boolean deleteFile(String key) {
-		File html = new File(UPLOAD_ROOT_PATH + key + ".html");
+		File html = new File(UPLOAD_ROOT_PATH + key + ApplicationConstant.EXT_CONTENT);
 		if (html.exists()) {
 			return html.delete();
 		}
@@ -266,6 +266,7 @@ public class FileDao {
 	 * @param key
 	 * @return
 	 */
+	/*
 	public boolean deleteFileAndFolder(String key) {
 		File html = new File(UPLOAD_ROOT_PATH + File.separator + key + ".html");
 		if (html.exists()) {
@@ -279,7 +280,8 @@ public class FileDao {
 		}
 		return true;
 	}
-
+	 */
+	
 	/**
 	 * 
 	 * @param item
@@ -296,9 +298,11 @@ public class FileDao {
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-					UPLOAD_ROOT_PATH + File.separator + item.getGroupId() + ".html"), "UTF-8"));
-			String htmlpath = new File(UPLOAD_ROOT_PATH + File.separator + item.getGroupId() + ".html").getAbsolutePath();
-			logger.debug("creating help group html " + htmlpath);
+					UPLOAD_ROOT_PATH + File.separator + item.getGroupId() + ApplicationConstant.EXT_HTML), "UTF-8"));
+			/*
+			String htmlpath = new File(UPLOAD_ROOT_PATH + File.separator + item.getGroupId() + ApplicationConstant.EXT_HTML
+					).getAbsolutePath();
+			*/
 			writer.write(htmlCodes);
 		    return true;
 		} catch (IOException e) {

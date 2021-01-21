@@ -6,7 +6,7 @@
 <meta name="google" content="notranslate">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>PDF viewer</title>
-<link rel="stylesheet" href="viewer.css">
+<link rel="stylesheet" href="pdf_viewer.css">
 <!-- This snippet is used in production (included from viewer.html) -->
 <link rel="resource" type="application/l10n" href="locale/locale.properties">
 <style>
@@ -17,18 +17,9 @@ body { background: white; }
 #errorWrapper > img { margin: auto; position: absolute; left: calc(50% - 312px); top: calc(50% - 259px); }
 .loadingInProgress #errorWrapper { top: 0; }
 </style>
-<script src="../build/pdf.js"></script>
-<script>
-pdfDefaultUrl = "compressed.tracemonkey-pldi-09.pdf";
-function scrolltop() {
-	// document.querySelector('#viewerContainer').scrollTo({top: 0});
-	// console.log('scrolltop ' + document.querySelector('#viewer').scrollTop);
-}
-</script>
-<script src="viewer.js"></script>
 </head>
 
-<body tabindex="1" class="loadingInProgress" onload="scrolltop();">
+<body tabindex="1" class="loadingInProgress">
     <div id="outerContainer">
 
       <div id="sidebarContainer">
@@ -382,7 +373,11 @@ function scrolltop() {
 
     </div> <!-- outerContainer -->
     <div id="printContainer"></div>
-    
+
+<script src="../build/pdf.js"></script>
+<script src="pdf_viewer.js"></script>
+<script>
+</script>    
 </body>
 </html>
 

@@ -2,12 +2,11 @@
 
 {{#style}}
 <style>
-.tree-wrapper { background-image: url('/img/bg-tree-gray.jpg'); border-right: 1px solid #ccc; overflow-y: auto; }
+.tree-wrapper { background-image: url('/img/bg-tree-gray.jpg'); overflow-y: auto; }
 .context-menu-list.context-menu-root {
   border-radius: 0; -webkit-box-shadow: 1px 1px 2px rgba(0,0,0,.5); box-shadow: 1px 1px 2px rgba(0,0,0,.5); }
 .context-menu-item { font-size: 13px; font-family: '맑은고딕'; }
-.contents-grid-wrapper { height: 100%; }
-.contents-wrapper { border: 0; padding-left: 16px; overflow-y: hidden; height: 100%; padding-left: 0; }
+.contents-wrapper { border: 0; padding-left: 16px; overflow-y: hidden; height: 100%; padding-left: 0; border-left: 1px solid #ccc;  }
 #contents-detail { border: 0; }
 .select-row { padding: 0; margin: 3px auto; }
 .select-row i { cursor: pointer; color: #05854A; font-size: 26px; margin-top: 4px; }
@@ -68,17 +67,8 @@ span.fancytree-node.fancytree-drop-reject { outline: 1px dotted red; }
 	
 	<!-- 컨텐츠 상세내용 --> <!-- 706px for A4 -->
 	<div class="cell small-9 contents-wrapper">
-	  <div class="grid-x" style="height: calc(100% - 92px);">
+	  <div class="grid-x" style="height: 100%;">
 	    <iframe id="contents-detail" class="cell" width="100%" height="100%" border="0"></iframe>
-	    <!-- 
-		<div id="editor-wrapper" class="cell" style="height: 100%;">
-	      <div class="row" style="height: 100%;">
-	        <div class="col-12 form-group" style="height: 100%;">
-			  <textarea id="synapEditor" name="content"></textarea>
-			</div>
-		  </div>
-		</div>
-		-->
 	  </div>
     </div>
 	
@@ -87,6 +77,7 @@ span.fancytree-node.fancytree-drop-reject { outline: 1px dotted red; }
 <iframe id="ifrm" style="display: none;"></iframe>
 
 {{#script}}
+<!-- 
 <script src="/synapeditor/synapeditor.config.js"></script>
 <script src="/synapeditor/synapeditor.min.js"></script>
 <script src="/synapeditor/externals/SEDocModelParser/SEDocModelParser.min.js"></script>
@@ -94,6 +85,7 @@ span.fancytree-node.fancytree-drop-reject { outline: 1px dotted red; }
 <script src="/synapeditor/plugins/icons/basicColorIcons.js"></script>
 <script src="/synapeditor/plugins/shapeEditor/shapeEditor.min.js"></script>
 <script src="/synapeditor/plugins/characterPicker/characterPicker.min.js"></script>
+-->
 <script src="/page/content.js"></script>
 <script>
 </script>

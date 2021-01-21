@@ -82,8 +82,8 @@ public class ContentsGroupService {
 		fdao.makeAllContentGroupHTML(list);
 		
 		// 변경이력 저장
-		chdao.addHistory(userid, type, method, "온라인도움말", "index.html", null);
-		chdao.addHistory(userid, type, method, params.getName(), params.getGroupId() + ".html", null);
+		chdao.addHistory(userid, type, method, "온라인도움말", "index.html", "인텍스 HTML 생성");
+		chdao.addHistory(userid, type, method, params.getName(), params.getGroupId() + ApplicationConstant.EXT_HTML, null);
 
 		return ret;
 	}
@@ -123,7 +123,7 @@ public class ContentsGroupService {
 		
 		// 변경이력 저장
 		if (params.getTree()==null && params.getOrderNo()!=null) {
-			chdao.addHistory(userid, type, method, params.getName(), params.getGroupId() + ".html", null);
+			chdao.addHistory(userid, type, method, params.getName(), params.getGroupId() + ApplicationConstant.EXT_HTML, "도움말 그룹 수정");
 		}
 		
 		return ret;
@@ -149,7 +149,7 @@ public class ContentsGroupService {
 			List<ContentsGroup> list = grepo.findAll();
 			fdao.makeAllContentGroupHTML(list);
 			// 변경이력 저장
-			chdao.addHistory(userid, type, method, item.getName(), groupid + ".html", null);
+			chdao.addHistory(userid, type, method, item.getName(), groupid + ApplicationConstant.EXT_HTML, "도움말 그룹 삭제");
 		}
 		
     }

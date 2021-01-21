@@ -46,10 +46,8 @@ function initTree() {
 				index: node.getIndex()
 			}
 		})
-		.done(function(msg) {
-		})
-		.always(function() {
-	    });
+		.done(function(msg) { })
+		.always(function() { });
       },
       // --- Drop-support:
       dragEnter: function(node, data) {
@@ -107,6 +105,9 @@ function initTree() {
         node.setExpanded();
       },
     },
+	click: function(event, data) {
+		data.node.toggleExpanded();
+	},
     activate: function(e, data){
 	  var node = data.node;
 	  selectedContentId = node.key;
@@ -347,7 +348,7 @@ function editContent() {
 
 function loadPage(key) {
   $("#editor-wrapper").hide();
-  $("#contents-detail").attr("src", "/viewer/viewer.html?file=/" + key + ".pdf");
+  $("#contents-detail").attr("src", "/viewer/web/viewer.html?file=/" + key + ".pdf");
   $.ajax({
 		url: "/" + key + ".pdf",
 		method: "GET",

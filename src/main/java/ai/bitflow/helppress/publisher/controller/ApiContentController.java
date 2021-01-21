@@ -70,6 +70,7 @@ public class ApiContentController {
 	 * @param id
 	 * @return
 	 */
+	/*
 	@DeleteMapping("/{id}")
 	public ContentsRes delete(@PathVariable String id, HttpSession sess) {
 		ContentsRes ret = new ContentsRes();
@@ -81,6 +82,7 @@ public class ApiContentController {
 		}
 		return ret;
 	}
+	*/
 	
 	/**
 	 * 컨텐츠 수정

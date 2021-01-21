@@ -52,9 +52,9 @@ public class ContentsService implements ApplicationConstant {
 			// 변경이력 저장
 			String type     = TYPE_CONTENT;
 			String method   = METHOD_MODIFY;
-			String filePath = key + ".html";
+			String filePath = key + ApplicationConstant.EXT_CONTENT;
 			// 중복제거
-			chdao.addHistory(userid, type, method, params.getTitle(), filePath, null);
+			chdao.addHistory(userid, type, method, params.getTitle(), filePath, "도움말 수정");
 		
 			return String.valueOf(item2.getId());
 		}
@@ -74,7 +74,7 @@ public class ContentsService implements ApplicationConstant {
 			// 변경이력 저장
 			String type     = TYPE_CONTENT;
 			String method   = METHOD_MODIFY;
-			String filePath = key + ".pdf";
+			String filePath = key + ApplicationConstant.EXT_PDF;
 			// 중복제거
 			chdao.addHistory(userid, type, method, params.getTitle(), filePath, params.getComment());
 			return String.valueOf(item2.getId());
@@ -97,6 +97,7 @@ public class ContentsService implements ApplicationConstant {
 	 * @param id
 	 * @return
 	 */
+	/*
 	@Transactional
 	public boolean deleteContent(String id, String userid) {
 		Optional<Contents> row = contentsrepo.findById(Integer.parseInt(id));
@@ -108,5 +109,6 @@ public class ContentsService implements ApplicationConstant {
 		}
 		return true;
 	}
+	*/
 
 }

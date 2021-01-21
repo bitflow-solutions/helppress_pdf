@@ -130,46 +130,54 @@ public class ReleaseService {
 	 * @return
 	 */
 	public boolean downloadOne(String key, HttpServletResponse res) {
-		
-		File destFolder = new File(DEST_FOLDER);
-		if (!destFolder.exists()) {
-			destFolder.mkdirs();
-		}
-		String timestamp = sdf.format(Calendar.getInstance().getTime());
-		String DEST_FILENAME = "release-" + key + "-" + timestamp + ".zip";
-		String destFilePath = DEST_FOLDER + DEST_FILENAME;
-		File destFile = new File(destFilePath);
-		try {
-			destFile.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-		Contents item1 = null;
-		Optional<Contents> row1 = crepo.findById(Integer.parseInt(key));
-		if (row1.isPresent()) {
-			// 기존 파일 업데이트
-			item1 = row1.get();
-		} else {
-			return false;
-		}
 
-		if (ApplicationConstant.TYPE_PDF.equals(item1.getType())) {
-			ZipUtil.packEntry(new File(SRC_FOLDER + key + ".pdf"), destFile);
+		File destFile = null;
+		String DEST_FILENAME = null;
+		if (ApplicationConstant.EXT_PDF.equals(ApplicationConstant.EXT_CONTENT)) {
+			DEST_FILENAME = key + ApplicationConstant.EXT_CONTENT;
+			destFile = new File(SRC_FOLDER + DEST_FILENAME);
 		} else {
-			String resourcePath = SRC_FOLDER + ApplicationConstant.UPLOAD_REL_PATH + File.separator + key;
-			File resourceDir = new File(resourcePath);
-			if (resourceDir.exists() && resourceDir.isDirectory()) {
-				ZipUtil.pack(new File(resourcePath), destFile, new NameMapper() {
-					@Override
-					public String map(String name) {
-						 return ApplicationConstant.UPLOAD_REL_PATH + "/" + key + "/" + name;
-					}
-				});
-				ZipUtil.addEntry(destFile, key + ".html", new File(SRC_FOLDER + key + ".html"));
+			File destFolder = new File(DEST_FOLDER);
+			if (!destFolder.exists()) {
+				destFolder.mkdirs();
+			}
+			
+			String timestamp = sdf.format(Calendar.getInstance().getTime());
+			DEST_FILENAME = "release-" + key + "-" + timestamp + ".zip";
+			String destFilePath = DEST_FOLDER + DEST_FILENAME;
+			destFile = new File(destFilePath);
+			try {
+				destFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+			
+			Contents item1 = null;
+			Optional<Contents> row1 = crepo.findById(Integer.parseInt(key));
+			if (row1.isPresent()) {
+				// 기존 파일 업데이트
+				item1 = row1.get();
 			} else {
-				ZipUtil.packEntry(new File(SRC_FOLDER + key + ".html"), destFile);
+				return false;
+			}
+	
+			if (ApplicationConstant.TYPE_PDF.equals(item1.getType())) {
+				ZipUtil.packEntry(new File(SRC_FOLDER + key + ApplicationConstant.EXT_CONTENT), destFile);
+			} else {
+				String resourcePath = SRC_FOLDER + ApplicationConstant.UPLOAD_REL_PATH + File.separator + key;
+				File resourceDir = new File(resourcePath);
+				if (resourceDir.exists() && resourceDir.isDirectory()) {
+					ZipUtil.pack(new File(resourcePath), destFile, new NameMapper() {
+						@Override
+						public String map(String name) {
+							 return ApplicationConstant.UPLOAD_REL_PATH + "/" + key + "/" + name;
+						}
+					});
+					ZipUtil.addEntry(destFile, key + ".html", new File(SRC_FOLDER + key + ".html"));
+				} else {
+					ZipUtil.packEntry(new File(SRC_FOLDER + key + ".html"), destFile);
+				}
 			}
 		}
 		
@@ -285,7 +293,7 @@ public class ReleaseService {
 		int i = 0;
 		for (String fileId : fileIds) {
 			// 도움말그룹인 경우 파일만, 도움말인 경우 파일과 폴더
-			String fileName = fileId + ".html";
+			String fileName = fileId + ApplicationConstant.EXT_CONTENT;
 			File file = new File(SRC_FOLDER + fileName);
 			if (file.exists() && file.isFile()) {
 				if (i==0) {
@@ -360,7 +368,7 @@ public class ReleaseService {
 				status = "fi-minus";
 				item.setDel(true);
 			}
-			item.setFileId(item.getFilePath().replace(".html", ""));
+			item.setFileId(item.getFilePath().replace(ApplicationConstant.EXT_CONTENT, ""));
 			item.setStatus(status);
 		}
 		return ret;
@@ -379,7 +387,7 @@ public class ReleaseService {
 				status = "fi-minus";
 				item.setDel(true);
 			}
-			item.setFileId(item.getFilePath().replace(".html", ""));
+			item.setFileId(item.getFilePath().replace(ApplicationConstant.EXT_CONTENT, ""));
 			item.setStatus(status);
 		}
 		return ret;
@@ -425,7 +433,6 @@ public class ReleaseService {
 				}
 				if (item.getReleased()!=null && item.getReleased()=='Y') {
 					item.setClassName("tr-released");
-					logger.debug("tr-released");
 				}
 				item.setType(type);
 			}

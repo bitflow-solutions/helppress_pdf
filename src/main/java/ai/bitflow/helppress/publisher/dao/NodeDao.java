@@ -42,12 +42,12 @@ public class NodeDao {
 			if (params.getParentKey()==null) {
 				Node node = new Node(params.getKey(), params.getTitle(), params.getFolder());
 				tree.add(node);
-				logger.debug("found parent to add #1");
+				// logger.debug("found parent to add #1");
 			} else {
 				findNodeAndAdd(tree, params);
 			}
 			String treeStr = new Gson().toJson(tree);
-			logger.debug("tree " + treeStr);
+			// logger.debug("tree " + treeStr);
 			item1.setTree(treeStr);
 			grepo.save(item1);
 		}
@@ -132,9 +132,9 @@ public class NodeDao {
 				children = foundParent.getChildren();
 			}
 			children.add((int)params.getIndex(), foundNode);
-			logger.debug("foundNode: " + foundNode.getKey() + " appending to: parent[" + params.getIndex()+ "] ");
+			//logger.debug("foundNode: " + foundNode.getKey() + " appending to: parent[" + params.getIndex()+ "] ");
 			String treeStr = new Gson().toJson(tree);
-			logger.debug("tree " + treeStr);
+			//logger.debug("tree " + treeStr);
 			item1.setTree(treeStr);
 			grepo.save(item1);
 		}

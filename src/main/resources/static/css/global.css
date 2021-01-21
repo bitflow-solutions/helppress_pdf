@@ -2,8 +2,9 @@ html, body, .bf-body-wrapper { height: 100%; font-family: "Noto Sans Korean", "�
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 { font-family: "Noto Sans Korean", "맑은 고딕", "돋움", Arial; }
 ul.fancytree-container, span.fancytree-selected span.fancytree-title, span.fancytree-active span.fancytree-title { 
 	font-family: "맑은 고딕", "돋움"; }
-.bf-body-wrapper { position: fixed; top: 54px; width: 100%; height: calc(100% - 54px); }
+.bf-body-wrapper { position: fixed; top: 52px; width: 100%; height: calc(100% - 54px); }
 #editor-wrapper { padding: 12px; }
+.contents-grid-wrapper { height: calc(100% - 89px); }
 .callout .button-group .button + .button { margin-left: 3px; }
 a { color: #555; }
 a:hover { color: #05854A; }
@@ -28,7 +29,7 @@ select { border: 1px solid #05854A; color: #05854A;  border-radius: 3px; max-wid
 .reveal .button-group { margin-bottom: 0; }
 #tree { width: min-content; min-height: 100%; }
 #tree, #tree > ul { border: none; outline: none; }
-.tree-wrapper { height: calc(100% - 92px); overflow-y: auto; }
+.tree-wrapper { height: 100%; overflow-y: auto; }
 span.fancytree-selected span.fancytree-title, span.fancytree-active span.fancytree-title { border: none; outline: none; }
 span.fancytree-node { height: 21px; }
 ul.fancytree-container li { min-height: 21px!important; }

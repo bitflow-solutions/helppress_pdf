@@ -6,10 +6,18 @@ package ai.bitflow.helppress.publisher.constant;
  */
 public interface ApplicationConstant {
 
-	String METHOD_ADD 	 = "ADD";
-	String METHOD_MODIFY = "MOD";
-	String METHOD_DELETE = "DEL";
+	String METHOD_ADD 	 = "추가";
+	String METHOD_MODIFY = "수정";
+	String METHOD_DELETE = "삭제";
 	String METHOD_RENAME = "REN";
+	
+	String EXT_HTML 	= ".html";
+	String EXT_PDF 		= ".pdf";
+	String EXT_CONTENT  = ".pdf"; // 설정 값
+	
+	String REASON_CHANGE_TREE 	 = "도움말 메뉴 구조 변경";
+	String REASON_DELETE_CONTENT_OR_FOLDER = "도움말/폴더 삭제";
+	String REASON_DELETE_CONTENT = "도움말 삭제";
 	
 	String TYPE_RELEASE	 = "RELEASE";
 	String TYPE_GROUP 	 = "GROUP";

@@ -65,10 +65,10 @@ public class NodeService {
 		
 		Contents item1 = new Contents();
 		if (params.getFolder()==null || params.getFolder()==false) {
-			title = "새 도움말 (";
+			title = "새 도움말";
 			item1.setAuthor(userid);		
 		} else {
-			title = "새 폴더 (";
+			title = "새 폴더";
 		}
 		item1.setTitle(title);
 		// 테이블 저장 후 ID 반환 (JavaScript 트리에서 노드 key로 사용됨)
@@ -81,15 +81,19 @@ public class NodeService {
 			contentsrepo.delete(item1);
 		}
 		
-		params.setTitle(title + item1.getId() + ")");
+		params.setTitle(title + " (" + item1.getId() + ")");
 		params.setKey(key);
 		
 		ndao.addNode(params);
 		
 		// 변경이력 저장
 		String type = ApplicationConstant.TYPE_GROUP;;
-		String filePath = groupid + ".html";
-		chdao.addHistory(userid, type, method, title, filePath, null);
+		String filePath = groupid + ApplicationConstant.EXT_HTML;
+		if (params.getFolder()==null || params.getFolder()==false) {
+			chdao.addHistory(userid, type, method, title, filePath, ApplicationConstant.REASON_CHANGE_TREE);
+		} else {
+			chdao.addHistory(userid, type, method, title, filePath, ApplicationConstant.REASON_CHANGE_TREE);
+		}
 		
 		ret.setParentKey(params.getParentKey());
 		ret.setGroupId(params.getGroupId());
@@ -124,7 +128,7 @@ public class NodeService {
 			// 1. 도움말인 경우
 			type = ApplicationConstant.TYPE_CONTENT;
 			item2.setType(type);
-			item2.setFilePath(params.getKey() + ".html");
+			item2.setFilePath(params.getKey() + ApplicationConstant.EXT_CONTENT);
 			// 1) 테이블 행삭제
 			Optional<Contents> row = contentsrepo.findById(Integer.parseInt(params.getKey()));
 			if (row.isPresent()) {
@@ -133,7 +137,7 @@ public class NodeService {
 			}
 			// 2) 파일 삭제
 			boolean success = fdao.deleteFile(params.getKey());
-			chdao.addHistory(userid, type, method, params.getTitle(), item2.getFilePath(), null);
+			chdao.addHistory(userid, type, method, params.getTitle(), item2.getFilePath(), ApplicationConstant.REASON_DELETE_CONTENT);
 			// 3) Todo: 첨부 이미지 폴더 삭제
 		} else {
 			type = ApplicationConstant.TYPE_FOLDER;
@@ -154,12 +158,15 @@ public class NodeService {
 			
 		}
 		
-		// Todo: 트리구조 저장
 		boolean foundNode = ndao.deleteNodeByKey(params);
-		logger.debug("found node " + foundNode);
+		// logger.debug("found node " + foundNode);
 		
-		// 변경이력 저장 - 도움말 또는 그룹
-		chdao.addHistory(userid, ApplicationConstant.TYPE_GROUP, ApplicationConstant.METHOD_MODIFY, params.getTitle(), ret.getGroupId() + ".html", null);
+		Optional<ContentsGroup> row = grepo.findById(params.getGroupId());
+		if (row.isPresent()) {
+			// 도움말 그룹 히스토리 저장
+			chdao.addHistory(userid, ApplicationConstant.TYPE_GROUP, ApplicationConstant.METHOD_MODIFY, 
+					row.get().getName(), ret.getGroupId() + ApplicationConstant.EXT_HTML, ApplicationConstant.REASON_CHANGE_TREE);	
+		}
 		
 		return ret;
 	}
@@ -177,7 +184,7 @@ public class NodeService {
 		
 		String method = ApplicationConstant.METHOD_MODIFY;
 		String type = ApplicationConstant.TYPE_GROUP;
-		String filePath = params.getGroupId() + ".html";
+		String filePath = params.getGroupId() + ApplicationConstant.EXT_HTML;
 		
 		// Todo: 트리구조 저장
 		boolean foundNode = false;
@@ -191,7 +198,6 @@ public class NodeService {
 			return ret;
 		}
 		
-		logger.debug("found node " + foundNode);
 		String title = ndao.getGroupTitle(params);
 		
 		Optional<ContentsGroup> row = grepo.findById(params.getGroupId());
@@ -204,7 +210,7 @@ public class NodeService {
 		}
 		
 		// 변경이력 저장
-		chdao.addHistory(userid, type, method, title, filePath, null);
+		chdao.addHistory(userid, type, method, title, filePath, ApplicationConstant.REASON_CHANGE_TREE);
 
 		ret.setMethod(method);
 		ret.setUsername(userid);
