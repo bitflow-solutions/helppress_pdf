@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -38,6 +39,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * 
+ * @author metho
+ *
+ */
 @Component
 public class FileDao {
 
@@ -49,9 +55,15 @@ public class FileDao {
 	@Value("${app.ext.template.path}")
 	private String EXT_TEMPLATE_PATH;
 
+	@Value("${app.history.root.path}")
+	private String HISTORY_ROOT_PATH;
+	
     @Autowired
     private SpringTemplateEngine tengine;
-    
+
+	@Autowired
+	private ChangeHistoryDao chdao;
+	
     @Autowired
 	private ContentsGroupRepository grepo;
     
@@ -185,25 +197,34 @@ public class FileDao {
 	 * @param item
 	 * @return
 	 */
-	public boolean newPdfFile(ContentsReq params, Contents item) {
+	public boolean newPdfFile(ContentsReq params, Contents item, long now) {
 		
 		File dir = new File(UPLOAD_ROOT_PATH);
 		if (!dir.exists()) {
 			boolean success = dir.mkdirs();
 		}
 		 
-		FileOutputStream writer = null;
+		FileOutputStream writer1 = null;
+		FileOutputStream writer2 = null;
 		try {
-			writer = new FileOutputStream(UPLOAD_ROOT_PATH + String.format("%05d" , item.getId()) + ".pdf");
-			writer.write(params.getFile1().getBytes());
+			writer1 = new FileOutputStream(UPLOAD_ROOT_PATH + String.format("%05d" , item.getId()) + ApplicationConstant.EXT_PDF);
+			writer1.write(params.getFile1().getBytes());
+
+			writer2 = new FileOutputStream(HISTORY_ROOT_PATH + now + ApplicationConstant.EXT_PDF);
+			writer2.write(params.getFile1().getBytes());
 		    return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		} finally {
-			if (writer!=null) {
+			if (writer1!=null) {
 				try {
-					writer.close();
+					writer1.close();
+				} catch (IOException e) { }
+			}
+			if (writer2!=null) {
+				try {
+					writer2.close();
 				} catch (IOException e) { }
 			}
 		}
@@ -214,8 +235,12 @@ public class FileDao {
 	 * @param list
 	 * @return
 	 */
-	public boolean makeAllContentGroupHTML(List<ContentsGroup> list) {
+	public boolean makeAllContentGroupHTML(List<ContentsGroup> list, String method, String userid) {
+		
 		// All contents group
+		String type   = ApplicationConstant.TYPE_GROUP;
+		long now = Calendar.getInstance().getTimeInMillis();
+		
 		for (int i=0; i<list.size(); i++) {
 			ContentsGroup item1 = list.get(i);
 			item1.setClassName("is-active");
@@ -224,19 +249,26 @@ public class FileDao {
 			ctx.setVariable("group", list);
 			ctx.setVariable("tree",  new Gson().fromJson(item1.getTree(), new TypeToken<List<Node>>(){}.getType()));
 			String htmlCodes = this.tengine.process("hp-group-template.html", ctx);
-			makeNewContentGroupTemplate(item1, htmlCodes);
+			long fileTimeInMillis = now + i + 1;
+			makeNewContentGroupTemplate(item1, htmlCodes, fileTimeInMillis);
 			item1.setClassName("");
 			if (i==0) {
 				ctx.setVariable("targetHtml", item1.getGroupId() + ApplicationConstant.EXT_HTML);
 				String indexHtmlCodes = this.tengine.process("hp-index-redirection.html", ctx);
 				// 첫번째 도움말그룹으로 포워딩 할 index.html 생성
-				makeNewIndexRedirectionHtml(indexHtmlCodes);
+				makeNewIndexHtml(indexHtmlCodes, now);
+				// 변경이력 저장
+				chdao.addHistory(userid, type, method, "메인 인덱스 파일", "index" + ApplicationConstant.EXT_HTML
+						, now, "도움말 그룹 수정");
 			}
+			// 변경이력 저장
+			chdao.addHistory(userid, type, method, item1.getName(), item1.getGroupId() + ApplicationConstant.EXT_HTML
+					, fileTimeInMillis, "도움말 그룹 수정");
 		}
 		return true;
 	}
 	
-	public void makeOneContentGroupHTML(ContentsGroup item1) {
+	public void makeOneContentGroupHTML(ContentsGroup item1, long now) {
 		List<ContentsGroup> list = grepo.findAll();
 		item1.setClassName("is-active");
 		// Write to HTML file
@@ -244,7 +276,7 @@ public class FileDao {
 		ctx.setVariable("group", list);
 		ctx.setVariable("tree",  new Gson().fromJson(item1.getTree(), new TypeToken<List<Node>>(){}.getType()));
 		String htmlCodes = this.tengine.process("hp-group-template.html", ctx);
-		makeNewContentGroupTemplate(item1, htmlCodes);
+		makeNewContentGroupTemplate(item1, htmlCodes, now);
 		item1.setClassName("");
 	}
 	
@@ -288,30 +320,40 @@ public class FileDao {
 	 * @param htmlCodes
 	 * @return
 	 */
-	public boolean makeNewContentGroupTemplate(ContentsGroup item, String htmlCodes) {
+	public boolean makeNewContentGroupTemplate(ContentsGroup item, String htmlCodes, long now) {
 		
 		File dir = new File(UPLOAD_ROOT_PATH);
 		if (!dir.exists()) {
 			boolean success = dir.mkdirs();
 		}
 		
-		BufferedWriter writer = null;
+		BufferedWriter writer1 = null;
+		BufferedWriter writer2 = null;
 		try {
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+			writer1 = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
 					UPLOAD_ROOT_PATH + File.separator + item.getGroupId() + ApplicationConstant.EXT_HTML), "UTF-8"));
+			
+			writer2 = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+					HISTORY_ROOT_PATH + File.separator + now + ApplicationConstant.EXT_HTML), "UTF-8"));
 			/*
 			String htmlpath = new File(UPLOAD_ROOT_PATH + File.separator + item.getGroupId() + ApplicationConstant.EXT_HTML
 					).getAbsolutePath();
 			*/
-			writer.write(htmlCodes);
+			writer1.write(htmlCodes);
+			writer2.write(htmlCodes);
 		    return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		} finally {
-			if (writer!=null) {
+			if (writer1!=null) {
 				try {
-					writer.close();
+					writer1.close();
+				} catch (IOException e) { }
+			}
+			if (writer2!=null) {
+				try {
+					writer2.close();
 				} catch (IOException e) { }
 			}
 		}
@@ -322,26 +364,37 @@ public class FileDao {
 	 * @param htmlCodes
 	 * @return
 	 */
-	public boolean makeNewIndexRedirectionHtml(String htmlCodes) {
+	private boolean makeNewIndexHtml(String htmlCodes, long now) {
 		
 		File dir = new File(UPLOAD_ROOT_PATH);
 		if (!dir.exists()) {
 			boolean success = dir.mkdirs();
 		}
 		
-		BufferedWriter writer = null;
+		BufferedWriter writer1 = null;
+		BufferedWriter writer2 = null;
 		try {
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+			writer1 = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
 					UPLOAD_ROOT_PATH + File.separator + "index.html"), "UTF-8"));
-			writer.write(htmlCodes);
+			writer1.write(htmlCodes);
+			
+			writer2 = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+					HISTORY_ROOT_PATH + File.separator + now + ApplicationConstant.EXT_HTML), "UTF-8"));
+			writer2.write(htmlCodes);
+			
 		    return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		} finally {
-			if (writer!=null) {
+			if (writer1!=null) {
 				try {
-					writer.close();
+					writer1.close();
+				} catch (IOException e) { }
+			}
+			if (writer2!=null) {
+				try {
+					writer2.close();
 				} catch (IOException e) { }
 			}
 		}

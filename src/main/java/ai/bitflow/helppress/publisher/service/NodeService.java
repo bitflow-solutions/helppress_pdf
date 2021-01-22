@@ -1,6 +1,6 @@
 package ai.bitflow.helppress.publisher.service;
 
-import java.util.List;
+import java.util.Calendar;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -8,9 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import ai.bitflow.helppress.publisher.constant.ApplicationConstant;
 import ai.bitflow.helppress.publisher.dao.ChangeHistoryDao;
@@ -25,7 +22,6 @@ import ai.bitflow.helppress.publisher.vo.req.DeleteNodeReq;
 import ai.bitflow.helppress.publisher.vo.req.NewNodeReq;
 import ai.bitflow.helppress.publisher.vo.req.UpdateNodeReq;
 import ai.bitflow.helppress.publisher.vo.res.result.NodeUpdateResult;
-import ai.bitflow.helppress.publisher.vo.tree.Node;
 
 
 @Service
@@ -89,10 +85,10 @@ public class NodeService {
 		// 변경이력 저장
 		String type = ApplicationConstant.TYPE_GROUP;;
 		String filePath = groupid + ApplicationConstant.EXT_HTML;
-		if (params.getFolder()==null || params.getFolder()==false) {
-			chdao.addHistory(userid, type, method, title, filePath, ApplicationConstant.REASON_CHANGE_TREE);
-		} else {
-			chdao.addHistory(userid, type, method, title, filePath, ApplicationConstant.REASON_CHANGE_TREE);
+		Optional<ContentsGroup> row = grepo.findById(params.getGroupId());
+		if (row.isPresent()) {
+			long now = Calendar.getInstance().getTimeInMillis();
+			chdao.addHistory(userid, type, method, row.get().getName(), filePath, now, ApplicationConstant.REASON_TREE_ADD);
 		}
 		
 		ret.setParentKey(params.getParentKey());
@@ -137,7 +133,7 @@ public class NodeService {
 			}
 			// 2) 파일 삭제
 			boolean success = fdao.deleteFile(params.getKey());
-			chdao.addHistory(userid, type, method, params.getTitle(), item2.getFilePath(), ApplicationConstant.REASON_DELETE_CONTENT);
+			chdao.addHistory(userid, type, method, params.getTitle(), item2.getFilePath(), null, ApplicationConstant.REASON_DELETE_CONTENT);
 			// 3) Todo: 첨부 이미지 폴더 삭제
 		} else {
 			type = ApplicationConstant.TYPE_FOLDER;
@@ -165,7 +161,7 @@ public class NodeService {
 		if (row.isPresent()) {
 			// 도움말 그룹 히스토리 저장
 			chdao.addHistory(userid, ApplicationConstant.TYPE_GROUP, ApplicationConstant.METHOD_MODIFY, 
-					row.get().getName(), ret.getGroupId() + ApplicationConstant.EXT_HTML, ApplicationConstant.REASON_CHANGE_TREE);	
+					row.get().getName(), ret.getGroupId() + ApplicationConstant.EXT_HTML, null, ApplicationConstant.REASON_DELETE_CONTENT_OR_FOLDER);	
 		}
 		
 		return ret;
@@ -186,7 +182,7 @@ public class NodeService {
 		String type = ApplicationConstant.TYPE_GROUP;
 		String filePath = params.getGroupId() + ApplicationConstant.EXT_HTML;
 		
-		// Todo: 트리구조 저장
+		// 트리구조 저장
 		boolean foundNode = false;
 		if (params.getTitle()!=null) {
 			// 제목 변경
@@ -199,6 +195,8 @@ public class NodeService {
 		}
 		
 		String title = ndao.getGroupTitle(params);
+
+		long now = Calendar.getInstance().getTimeInMillis();
 		
 		Optional<ContentsGroup> row = grepo.findById(params.getGroupId());
 		ContentsGroup item1 = null;
@@ -206,11 +204,18 @@ public class NodeService {
 			return null;
 		} else {
 			item1 = row.get();
-			fdao.makeOneContentGroupHTML(item1);
+			fdao.makeOneContentGroupHTML(item1, now);
 		}
 		
 		// 변경이력 저장
-		chdao.addHistory(userid, type, method, title, filePath, ApplicationConstant.REASON_CHANGE_TREE);
+//		logger.debug("rename " + params.getRename());
+		if (params.getRename()!=null && params.getRename()==true) {
+			chdao.addHistory(userid, type, method, title, filePath, now, 
+					ApplicationConstant.REASON_TREE_RENAME);
+		} else {
+			chdao.addHistory(userid, type, method, title, filePath, now, 
+					ApplicationConstant.REASON_CHANGE_TREE);
+		}
 
 		ret.setMethod(method);
 		ret.setUsername(userid);

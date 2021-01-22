@@ -40,6 +40,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 	<div class="cell small-7" style="padding: 0 20px 0 10px;">
 	  <table class="list-table">
 		<colgroup>
+			<col width="3%"/>
 			<col width="7%"/>
 			<col width="12%"/>
 			<col width="17%"/>
@@ -50,6 +51,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 		</colgroup>
 		<thead>
 			<tr>
+				<th>순번</th>
 				<th>작업</th>
 				<th>파일구분</th>
 				<th>이름</th>
@@ -62,10 +64,11 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 		<tbody>
 			{{#hlist}}
 			<tr>
+				<td class="text-right">{{id}}</td>
 				<td class="text-center">{{method}}</td>
 				<td class="text-center">{{type}}</td>
 				<td class="text-left">{{#title}}{{title}}{{/title}}</td>
-				<td class="text-left">{{#filePath}}{{filePath}}{{/filePath}}</td>
+				<td class="text-left"><a href="/history/{{id}}" target="_blank">{{#filePath}}{{filePath}}{{/filePath}}</a></td>
 				<td class="text-left">{{#comment}}{{comment}}{{/comment}}</td>
 				<td class="text-center">{{#userid}}{{userid}}{{/userid}}</td>
 				<td class="text-center">{{updDtStr}}</td>

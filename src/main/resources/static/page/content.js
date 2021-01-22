@@ -35,7 +35,7 @@ function initTree() {
       },
       dragEnd: function(node, data) {
       	console.log("dragEnd: key " + node.key + " parent " + node.parent.key + " idx " + node.getIndex());
-      	var parentKey = node.parent.key.startsWith("root")?null:node.parent.key;
+      	var parentKey = (node.parent.key==null||node.parent.key.indexOf("root")==0)?null:node.parent.key;
       	$.ajax({
 			url: URL_API_NODE,
 			method: "PUT",
@@ -386,7 +386,7 @@ function renameTitle(e, data) {
 	try {
 	    var title = data.input.val();
 	    var node = data.node;
-	    var data = { groupId: selectedGroupId, key: node.key, title: title };
+	    var data = { groupId: selectedGroupId, key: node.key, title: title, rename: true };
 	    if (node.folder && node.folder===true) {
 	    	data.folder = true;
 	    }

@@ -48,6 +48,9 @@ public class ReleaseService {
 	
 	@Value("${app.release.root.path}")
 	private String DEST_FOLDER;
+
+	@Value("${app.history.root.path}")
+	private String HISTORY_ROOT_PATH;
 	
 	@Autowired
 	private ReleaseHistoryRepository rhrepo;
@@ -262,6 +265,53 @@ public class ReleaseService {
             }
         }
 	}
+	
+	public boolean downloadFileFromHistory(Integer id, HttpServletResponse res) {
+		
+		Optional<ChangeHistory> row = chdao.findById(id);
+		if (!row.isPresent()) {
+			return false;
+		}
+		
+		ChangeHistory item = row.get();
+		
+		String[] filePathSplit = item.getFilePath().split("\\.");
+		String SRC_FILENAME  = HISTORY_ROOT_PATH + item.getUploadTimeInMillis() + "." + filePathSplit[1];
+		String DEST_FILENAME = filePathSplit[0] + "-" + item.getUploadTimeInMillis() + "." + filePathSplit[1];
+
+		File destFile = new File(SRC_FILENAME);
+		FileInputStream fis = null;
+		ServletOutputStream out = null;
+		
+		try {
+			fis = new FileInputStream(destFile); 			// file not found exception || 엑세스가 거부되었습니다
+			res.setHeader(HttpHeaders.PRAGMA, 				"no-cache");
+			res.setHeader(HttpHeaders.CONTENT_TYPE, 		"application/zip");
+			res.setHeader(HttpHeaders.CONTENT_LENGTH, 		"" + destFile.length());
+			res.setHeader(HttpHeaders.CONTENT_DISPOSITION, 	"attachment; filename=\"" + DEST_FILENAME + "\"");
+			out = res.getOutputStream();
+            FileCopyUtils.copy(fis, out);
+			return true;
+		} catch(FileNotFoundException e1){
+			e1.printStackTrace();
+			return false;
+        } catch(Exception e2){
+        	e2.printStackTrace();
+			return false;
+        } finally {
+            if(fis != null){
+                try{
+                    fis.close();
+                }catch(Exception e1){}
+            }
+            if (out!=null) {
+            	try{
+            		out.flush();
+            		out.close();
+            	} catch(Exception e2) {}
+            }
+        }
+	}
 
 	/**
 	 * 
@@ -318,8 +368,9 @@ public class ReleaseService {
         	item.setFileName(DEST_FILENAME);
         	item.setUserid(username);
         	rhrepo.save(item);
+    		long now = Calendar.getInstance().getTimeInMillis();
 			chdao.addHistory(username, ApplicationConstant.TYPE_RELEASE, ApplicationConstant.METHOD_ADD, 
-					String.valueOf(item.getId()), destFile.getName(), null);
+					String.valueOf(item.getId()), destFile.getName(), null, null);
 		}
 		
 		FileInputStream fis = null;

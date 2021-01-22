@@ -9,6 +9,7 @@ public class UpdateNodeReq {
 	private String key;
 	private String title;
 	private Boolean folder;
+	private Boolean rename; 
 	
 	// Drag Reorder
 	private String parentKey;

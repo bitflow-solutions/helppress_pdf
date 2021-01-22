@@ -44,7 +44,6 @@ public class ApiNodeController {
 	@PostMapping("")
 	public NodeUpdateRes newNode(NewNodeReq params, HttpSession sess) {
 
-		// logger.debug("params " + params.toString());
 		NodeUpdateRes ret = new NodeUpdateRes();
 		String username = SpringUtil.getSessionUserid(sess);
 		if (username==null) {
@@ -68,7 +67,6 @@ public class ApiNodeController {
 	@DeleteMapping("")
 	public NodeUpdateRes deleteNode(DeleteNodeReq params, HttpSession sess) {
 		
-		logger.debug("deleteNode");
 		NodeUpdateRes ret = new NodeUpdateRes();
 		String username = SpringUtil.getSessionUserid(sess);
 		if (username==null) {
@@ -92,7 +90,6 @@ public class ApiNodeController {
 	@PutMapping("")
 	public NodeUpdateRes updateNode(UpdateNodeReq params, HttpSession sess) {
 
-//		logger.debug("params " + params.toString());
 		NodeUpdateRes ret = new NodeUpdateRes();
 		String username = SpringUtil.getSessionUserid(sess);
 		if (username==null) {

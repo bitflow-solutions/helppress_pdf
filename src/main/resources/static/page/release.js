@@ -45,7 +45,8 @@ function downloadChanged() {
 		return;
 	}
 	var fileIds = new Array();
-	for (var checkbox of checkboxes) {
+	for (var i=0; i<checkboxes.length; i++) {
+		var checkbox = checkboxes[i];
 		fileIds.push(checkbox.value);
 	}
 	if (confirm("배포처리 하시겠습니까?\n배포처리 하시면 변경이력에서 삭제됩니다.")) {

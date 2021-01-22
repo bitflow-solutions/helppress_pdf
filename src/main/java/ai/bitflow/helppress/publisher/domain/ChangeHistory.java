@@ -40,6 +40,7 @@ public class ChangeHistory {
 	private Character released;
 	@Column(length=255)
 	private String comment;
+	private Long uploadTimeInMillis;
 	
 	@Transient
 	private String status;
@@ -57,7 +58,7 @@ public class ChangeHistory {
 	private String updDtStr;
 	
 	public String getUpdDtStr() {
-		return updDt.format(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm"));
+		return updDt.format(DateTimeFormatter.ofPattern("MM.dd HH:mm"));
 	}
 	
 	public ChangeHistory(Integer id, String filePath) {

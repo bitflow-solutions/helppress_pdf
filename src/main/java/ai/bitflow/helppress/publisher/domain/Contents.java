@@ -34,6 +34,7 @@ public class Contents {
 	private String author;
 	@CreationTimestamp
     private LocalDateTime regDt;
+	
 	private Boolean released;
 
 	@Transient

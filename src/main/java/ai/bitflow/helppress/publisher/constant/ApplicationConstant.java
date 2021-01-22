@@ -15,7 +15,9 @@ public interface ApplicationConstant {
 	String EXT_PDF 		= ".pdf";
 	String EXT_CONTENT  = ".pdf"; // 설정 값
 	
-	String REASON_CHANGE_TREE 	 = "도움말 메뉴 구조 변경";
+	String REASON_CHANGE_TREE = "도움말/폴더 순서 변경";
+	String REASON_TREE_RENAME = "도움말/폴더 제목 변경";
+	String REASON_TREE_ADD 	  = "도움말/폴더 추가";
 	String REASON_DELETE_CONTENT_OR_FOLDER = "도움말/폴더 삭제";
 	String REASON_DELETE_CONTENT = "도움말 삭제";
 	

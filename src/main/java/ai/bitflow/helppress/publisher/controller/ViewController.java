@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import ai.bitflow.helppress.publisher.domain.ChangeHistory;
@@ -148,12 +150,28 @@ public class ViewController {
 		List<ChangeHistory> hlist  = rservice.getHistories();
 		List<ChangeHistory> clist  = rservice.getAllChangesExcludeReleaseOrderByNameAsc();
 		
-//		logger.debug("clist " + clist.toString());
 		mo.addAttribute("clist", clist);
 		mo.addAttribute("hlist", hlist);
 		
 		File previewPath = new File(SRC_FOLDER);
 		mo.addAttribute("previewPath", previewPath.getAbsolutePath());
+		return "page/history";
+	}
+	
+	/**
+	 * 파일 이력 보기
+	 * @param mo
+	 * @param sess
+	 * @return
+	 */
+	@GetMapping("/history/{id}") 
+	public String history(Model mo, HttpSession sess, @PathVariable int id, HttpServletResponse res) {
+		
+		String username = SpringUtil.getSessionUserid(sess);
+		if (username==null) {
+			return "redirect:/login";
+		}
+		rservice.downloadFileFromHistory(id, res);
 		return "page/history";
 	}
 

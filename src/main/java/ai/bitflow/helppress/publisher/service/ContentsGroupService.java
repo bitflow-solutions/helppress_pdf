@@ -1,5 +1,6 @@
 package ai.bitflow.helppress.publisher.service;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,12 +80,8 @@ public class ContentsGroupService {
 		String ret = grepo.save(item).getGroupId();
 		
 		List<ContentsGroup> list = grepo.findAll();
-		fdao.makeAllContentGroupHTML(list);
+		fdao.makeAllContentGroupHTML(list, method, userid);
 		
-		// 변경이력 저장
-		chdao.addHistory(userid, type, method, "온라인도움말", "index.html", "인텍스 HTML 생성");
-		chdao.addHistory(userid, type, method, params.getName(), params.getGroupId() + ApplicationConstant.EXT_HTML, null);
-
 		return ret;
 	}
 	
@@ -97,7 +94,6 @@ public class ContentsGroupService {
 	@Transactional
     public ContentsGroup updateGroup(ContentsGroupReq params, String userid) {
 		
-		String type   = ApplicationConstant.TYPE_GROUP;
 		String method = ApplicationConstant.METHOD_MODIFY;
 		
 		Optional<ContentsGroup> row = grepo.findById(params.getGroupId());
@@ -119,12 +115,7 @@ public class ContentsGroupService {
 		ContentsGroup ret = grepo.save(item1);
 		
 		List<ContentsGroup> list = grepo.findAll();
-		fdao.makeAllContentGroupHTML(list);
-		
-		// 변경이력 저장
-		if (params.getTree()==null && params.getOrderNo()!=null) {
-			chdao.addHistory(userid, type, method, params.getName(), params.getGroupId() + ApplicationConstant.EXT_HTML, "도움말 그룹 수정");
-		}
+		fdao.makeAllContentGroupHTML(list, method, userid);
 		
 		return ret;
     }
@@ -140,16 +131,13 @@ public class ContentsGroupService {
 		
 		String type   = ApplicationConstant.TYPE_GROUP;
 		String method = ApplicationConstant.METHOD_DELETE;
-		
 		Optional<ContentsGroup> row = grepo.findById(groupid);
 		
 		if (row.isPresent()) {
 			ContentsGroup item = row.get();
 			grepo.deleteById(groupid);
 			List<ContentsGroup> list = grepo.findAll();
-			fdao.makeAllContentGroupHTML(list);
-			// 변경이력 저장
-			chdao.addHistory(userid, type, method, item.getName(), groupid + ApplicationConstant.EXT_HTML, "도움말 그룹 삭제");
+			fdao.makeAllContentGroupHTML(list, method, userid);
 		}
 		
     }

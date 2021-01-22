@@ -2,6 +2,7 @@ package ai.bitflow.helppress.publisher.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class ChangeHistoryDao {
 	 * @param title
 	 * @param filePath
 	 */
-    public void addHistory(String userid, String type, String method, String title, String filePath, String comment) {
+    public void addHistory(String userid, String type, String method, String title, String filePath, Long uploadTimeInMillis, String comment) {
 		ChangeHistory item = new ChangeHistory();
 		item.setUserid(userid);
 		item.setType(type);
@@ -35,6 +36,7 @@ public class ChangeHistoryDao {
 		item.setComment(comment);
 		item.setMethod(method);
 		item.setFilePath(filePath);
+		item.setUploadTimeInMillis(uploadTimeInMillis);
 		item.setReleased(null);
 		chrepo.save(item);
 	}
@@ -101,6 +103,10 @@ public class ChangeHistoryDao {
 			item.setReleased('Y');
 		}
 		chrepo.saveAll(list);
+	}
+
+	public Optional<ChangeHistory> findById(Integer id) {
+		return chrepo.findById(id);
 	}
 
 }

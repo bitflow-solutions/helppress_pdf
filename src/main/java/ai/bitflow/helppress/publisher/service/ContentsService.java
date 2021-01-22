@@ -1,10 +1,12 @@
 package ai.bitflow.helppress.publisher.service;
 
+import java.util.Calendar;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,9 @@ import ai.bitflow.helppress.publisher.vo.req.ContentsReq;
 public class ContentsService implements ApplicationConstant {
 
 	private final Logger logger = LoggerFactory.getLogger(ContentsService.class);
+	
+	@Value("${app.history.root.path}")
+	private String HISTORY_ROOT_PATH;
 	
 	@Autowired
 	private ContentsRepository contentsrepo;
@@ -53,8 +58,9 @@ public class ContentsService implements ApplicationConstant {
 			String type     = TYPE_CONTENT;
 			String method   = METHOD_MODIFY;
 			String filePath = key + ApplicationConstant.EXT_CONTENT;
-			// 중복제거
-			chdao.addHistory(userid, type, method, params.getTitle(), filePath, "도움말 수정");
+
+			long now = Calendar.getInstance().getTimeInMillis();
+			chdao.addHistory(userid, type, method, params.getTitle(), filePath, now, "도움말 수정");
 		
 			return String.valueOf(item2.getId());
 		}
@@ -70,13 +76,15 @@ public class ContentsService implements ApplicationConstant {
 			Contents item1 = row1.get();
 			item1.setType(ApplicationConstant.TYPE_PDF);
 			Contents item2 = contentsrepo.save(item1);
-			fdao.newPdfFile(params, item2);
+			
+			long now = Calendar.getInstance().getTimeInMillis();
+			fdao.newPdfFile(params, item2, now);
 			// 변경이력 저장
 			String type     = TYPE_CONTENT;
 			String method   = METHOD_MODIFY;
 			String filePath = key + ApplicationConstant.EXT_PDF;
-			// 중복제거
-			chdao.addHistory(userid, type, method, params.getTitle(), filePath, params.getComment());
+			
+			chdao.addHistory(userid, type, method, params.getTitle(), filePath, now, params.getComment());
 			return String.valueOf(item2.getId());
 		}
 		return null;

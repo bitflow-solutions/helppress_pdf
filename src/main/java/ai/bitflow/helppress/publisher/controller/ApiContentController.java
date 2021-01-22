@@ -5,7 +5,6 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -85,7 +84,7 @@ public class ApiContentController {
 	*/
 	
 	/**
-	 * 컨텐츠 수정
+	 * 컨텐츠 수정 (에디터의 경우 HTML 수정, PDF의 경우 업로드 처리)
 	 * @param params
 	 * @param id
 	 * @return
@@ -100,8 +99,10 @@ public class ApiContentController {
 			ret.setFailResponse(401);
 		} else {
 			if (params.getFile1()==null) {
+				// 에디터로 HTML 수정한 경우
 				cservice.updateContent(params, id, username);
 			} else {
+				// PDF 파일 업로드 한 경우
 				cservice.updatePdfContent(params, id, username);
 			}
 			result.setKey(id);
