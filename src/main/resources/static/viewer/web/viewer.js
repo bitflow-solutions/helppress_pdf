@@ -14580,7 +14580,7 @@ function getDefaultPreferences() {
   if (!defaultPreferences) {
     defaultPreferences = Promise.resolve({
       "cursorToolOnLoad": 0,
-      "defaultZoomValue": "",
+      "defaultZoomValue": "130",
       "disablePageLabels": false,
       "enablePermissions": false,
       "enablePrintAutoRotate": false,
