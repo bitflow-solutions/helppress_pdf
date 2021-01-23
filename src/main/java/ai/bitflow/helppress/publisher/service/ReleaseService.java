@@ -41,7 +41,7 @@ public class ReleaseService {
 
 	private final Logger logger = LoggerFactory.getLogger(ReleaseService.class);
 	
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 	
 	@Value("${app.upload.root.path}")
 	private String SRC_FOLDER;
@@ -72,7 +72,7 @@ public class ReleaseService {
 		
 		boolean released = release!=null?release:false;
 		String timestamp = sdf.format(Calendar.getInstance().getTime());
-		String DEST_FILENAME = "release-all-" + timestamp + ".zip";
+		String DEST_FILENAME = "happyplus-release-" + timestamp + ".zip";
 		
 		// 배포이력 저장
 		if (released) {
@@ -275,9 +275,12 @@ public class ReleaseService {
 		
 		ChangeHistory item = row.get();
 		
-		String[] filePathSplit = item.getFilePath().split("\\.");
-		String SRC_FILENAME  = HISTORY_ROOT_PATH + item.getUploadTimeInMillis() + "." + filePathSplit[1];
-		String DEST_FILENAME = filePathSplit[0] + "-" + item.getUploadTimeInMillis() + "." + filePathSplit[1];
+		// 원래 파일명을 쪼갬
+		int lastDotIdx = item.getFilePath().lastIndexOf(".");
+		// 히스토리에 있는 파일명
+		String SRC_FILENAME  = HISTORY_ROOT_PATH + item.getRealPath();
+		// 원래 파일명
+		String DEST_FILENAME = item.getFilePath().substring(0, lastDotIdx) + "-" + item.getRealPath();
 
 		File destFile = new File(SRC_FILENAME);
 		FileInputStream fis = null;
@@ -293,9 +296,11 @@ public class ReleaseService {
             FileCopyUtils.copy(fis, out);
 			return true;
 		} catch(FileNotFoundException e1){
+			logger.debug("E1");
 			e1.printStackTrace();
 			return false;
         } catch(Exception e2){
+        	logger.debug("E2");
         	e2.printStackTrace();
 			return false;
         } finally {
@@ -314,7 +319,7 @@ public class ReleaseService {
 	}
 
 	/**
-	 * 
+	 * 변경된 파일만 ZIP 파일로 묶어서 다운로드
 	 * @param res
 	 * @return
 	 */
@@ -330,7 +335,7 @@ public class ReleaseService {
 			destFolder.mkdirs();
 		}
 		String timestamp = sdf.format(Calendar.getInstance().getTime());
-		String DEST_FILENAME = "release-part-" + timestamp + ".zip";
+		String DEST_FILENAME = "happyplus-release-" + timestamp + ".zip";
 		String destFilePath = DEST_FOLDER + DEST_FILENAME;
 		File destFile = new File(destFilePath);
 		try {
@@ -343,13 +348,12 @@ public class ReleaseService {
 		int i = 0;
 		for (String fileId : fileIds) {
 			// 도움말그룹인 경우 파일만, 도움말인 경우 파일과 폴더
-			String fileName = fileId + ApplicationConstant.EXT_CONTENT;
-			File file = new File(SRC_FOLDER + fileName);
+			File file = new File(SRC_FOLDER + fileId);
 			if (file.exists() && file.isFile()) {
 				if (i==0) {
 					ZipUtil.packEntry(file, destFile);
 				} else {
-					ZipUtil.addEntry(destFile, fileName, file);
+					ZipUtil.addEntry(destFile, fileId, file);
 				}
 				String resourcePath = SRC_FOLDER + ApplicationConstant.UPLOAD_REL_PATH + File.separator + fileId;
 				File resourceDir = new File(resourcePath);
@@ -362,16 +366,16 @@ public class ReleaseService {
 		}
 		
 		// Todo:
-		if (release) {
-        	ReleaseHistory item = new ReleaseHistory();
-        	item.setType(ApplicationConstant.RELEASE_PART);
-        	item.setFileName(DEST_FILENAME);
-        	item.setUserid(username);
-        	rhrepo.save(item);
-    		long now = Calendar.getInstance().getTimeInMillis();
-			chdao.addHistory(username, ApplicationConstant.TYPE_RELEASE, ApplicationConstant.METHOD_ADD, 
-					String.valueOf(item.getId()), destFile.getName(), null, null);
-		}
+//		if (release) {
+//        	ReleaseHistory item = new ReleaseHistory();
+//        	item.setType(ApplicationConstant.RELEASE_PART);
+//        	item.setFileName(DEST_FILENAME);
+//        	item.setUserid(username);
+//        	rhrepo.save(item);
+//    		long now = Calendar.getInstance().getTimeInMillis();
+//			chdao.addHistory(username, ApplicationConstant.TYPE_RELEASE, ApplicationConstant.METHOD_ADD, 
+//					String.valueOf(item.getId()), destFile.getName(), null, null);
+//		}
 		
 		FileInputStream fis = null;
 		ServletOutputStream out = null;
@@ -438,7 +442,7 @@ public class ReleaseService {
 				status = "fi-minus";
 				item.setDel(true);
 			}
-			item.setFileId(item.getFilePath().replace(ApplicationConstant.EXT_CONTENT, ""));
+			item.setFileId(item.getFilePath());
 			item.setStatus(status);
 		}
 		return ret;

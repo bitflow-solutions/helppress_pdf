@@ -30,7 +30,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 </div>
 
 <div class="grid-x" style="padding: 10px 0 0;">
-	<div class="cell small-7"><h5 class="text-center">변경된 파일</h5></div>
+	<div class="cell small-7"><h5 class="text-center">배포 후 변경된 파일</h5></div>
 	<div class="cell small-5"><h5 class="text-center">배포 이력</h5></div>
 </div>
 
@@ -51,7 +51,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 				<tr>
 					<th><input type="checkbox" id="check-all-file"  /></th>
 					<th>작업</th>
-					<th>제목</th>
+					<th>이름</th>
 					<th>파일명</th>
 					<th>담당자</th>
 					<th>최종변경일시</th>
@@ -61,7 +61,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
    				{{#clist}}
 				<tr>
 					<td class="text-center"><input type="checkbox" id="{{fileId}}" class="changed-files" name="fileIds" value="{{fileId}}" {{#del}}disabled{{/del}}/></td>
-					<td class="text-center"><i class="{{status}}"></i></td>
+					<td class="text-center">{{method}}</td>
 					<td>{{#title}}{{title}}{{/title}}</td>
 					<td>{{#filePath}}{{filePath}}{{/filePath}}</td>
 			 		<td class="text-center" >{{#userid}}{{userid}}{{/userid}}</td>

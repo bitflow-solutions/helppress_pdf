@@ -60,7 +60,7 @@ public class ContentsService implements ApplicationConstant {
 			String filePath = key + ApplicationConstant.EXT_CONTENT;
 
 			long now = Calendar.getInstance().getTimeInMillis();
-			chdao.addHistory(userid, type, method, params.getTitle(), filePath, now, "도움말 수정");
+			chdao.addHistory(userid, type, method, params.getTitle(), filePath, now + ApplicationConstant.EXT_CONTENT, "도움말 수정");
 		
 			return String.valueOf(item2.getId());
 		}
@@ -84,7 +84,7 @@ public class ContentsService implements ApplicationConstant {
 			String method   = METHOD_MODIFY;
 			String filePath = key + ApplicationConstant.EXT_PDF;
 			
-			chdao.addHistory(userid, type, method, params.getTitle(), filePath, now, params.getComment());
+			chdao.addHistory(userid, type, method, params.getTitle(), filePath, now + ApplicationConstant.EXT_PDF, params.getComment());
 			return String.valueOf(item2.getId());
 		}
 		return null;

@@ -165,14 +165,14 @@ public class ViewController {
 	 * @return
 	 */
 	@GetMapping("/history/{id}") 
-	public String history(Model mo, HttpSession sess, @PathVariable int id, HttpServletResponse res) {
+	public void history(Model mo, HttpSession sess, @PathVariable int id, HttpServletResponse res) {
 		
 		String username = SpringUtil.getSessionUserid(sess);
 		if (username==null) {
-			return "redirect:/login";
+			return;
 		}
 		rservice.downloadFileFromHistory(id, res);
-		return "page/history";
+		return;
 	}
 
 	/**

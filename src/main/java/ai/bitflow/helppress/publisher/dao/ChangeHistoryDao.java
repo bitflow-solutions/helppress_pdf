@@ -28,7 +28,7 @@ public class ChangeHistoryDao {
 	 * @param title
 	 * @param filePath
 	 */
-    public void addHistory(String userid, String type, String method, String title, String filePath, Long uploadTimeInMillis, String comment) {
+    public void addHistory(String userid, String type, String method, String title, String filePath, String realPath, String comment) {
 		ChangeHistory item = new ChangeHistory();
 		item.setUserid(userid);
 		item.setType(type);
@@ -36,7 +36,7 @@ public class ChangeHistoryDao {
 		item.setComment(comment);
 		item.setMethod(method);
 		item.setFilePath(filePath);
-		item.setUploadTimeInMillis(uploadTimeInMillis);
+		item.setRealPath(realPath);
 		item.setReleased(null);
 		chrepo.save(item);
 	}

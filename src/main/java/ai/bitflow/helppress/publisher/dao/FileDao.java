@@ -259,11 +259,11 @@ public class FileDao {
 				makeNewIndexHtml(indexHtmlCodes, now);
 				// 변경이력 저장
 				chdao.addHistory(userid, type, method, "메인 인덱스 파일", "index" + ApplicationConstant.EXT_HTML
-						, now, "도움말 그룹 수정");
+						, now + ApplicationConstant.EXT_HTML, "도움말 그룹 수정");
 			}
 			// 변경이력 저장
 			chdao.addHistory(userid, type, method, item1.getName(), item1.getGroupId() + ApplicationConstant.EXT_HTML
-					, fileTimeInMillis, "도움말 그룹 수정");
+					, fileTimeInMillis + ApplicationConstant.EXT_HTML, "도움말 그룹 수정");
 		}
 		return true;
 	}

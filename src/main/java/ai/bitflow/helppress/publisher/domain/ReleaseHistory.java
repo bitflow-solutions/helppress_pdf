@@ -42,7 +42,7 @@ public class ReleaseHistory {
 	private String typeKr;
 	
 	public String getUpdDtStr() {
-		return updDt.format(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm"));
+		return updDt.format(DateTimeFormatter.ofPattern("MM.dd HH:mm"));
 	}
 	
 }

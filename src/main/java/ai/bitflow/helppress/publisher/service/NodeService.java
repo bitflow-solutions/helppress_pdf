@@ -88,7 +88,7 @@ public class NodeService {
 		Optional<ContentsGroup> row = grepo.findById(params.getGroupId());
 		if (row.isPresent()) {
 			long now = Calendar.getInstance().getTimeInMillis();
-			chdao.addHistory(userid, type, method, row.get().getName(), filePath, now, ApplicationConstant.REASON_TREE_ADD);
+			chdao.addHistory(userid, type, method, row.get().getName(), filePath, now + ApplicationConstant.EXT_HTML, ApplicationConstant.REASON_TREE_ADD);
 		}
 		
 		ret.setParentKey(params.getParentKey());
@@ -210,10 +210,10 @@ public class NodeService {
 		// 변경이력 저장
 //		logger.debug("rename " + params.getRename());
 		if (params.getRename()!=null && params.getRename()==true) {
-			chdao.addHistory(userid, type, method, title, filePath, now, 
+			chdao.addHistory(userid, type, method, title, filePath, now + ApplicationConstant.EXT_HTML, 
 					ApplicationConstant.REASON_TREE_RENAME);
 		} else {
-			chdao.addHistory(userid, type, method, title, filePath, now, 
+			chdao.addHistory(userid, type, method, title, filePath, now + ApplicationConstant.EXT_HTML, 
 					ApplicationConstant.REASON_CHANGE_TREE);
 		}
 

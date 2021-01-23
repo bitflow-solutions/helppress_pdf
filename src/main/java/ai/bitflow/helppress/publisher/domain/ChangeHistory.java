@@ -40,7 +40,8 @@ public class ChangeHistory {
 	private Character released;
 	@Column(length=255)
 	private String comment;
-	private Long uploadTimeInMillis;
+	@Column(length=255)
+	private String realPath;
 	
 	@Transient
 	private String status;

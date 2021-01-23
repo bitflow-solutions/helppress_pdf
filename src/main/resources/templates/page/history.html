@@ -8,6 +8,7 @@
 .list-row .col { height: 100%; overflow-y: auto; padding-right: 0; }
 .list-table th, .list-table td { color: #555; font-weight: normal; }
 .list-table td { font-size: 12px; border: 1px solid #ddd; border-collapse: collapse; padding-left: 6px; padding-right: 6px; }
+.list-table a { text-decoration: underline; }
 .contents-area div.cell { height: calc(100% - 32px); overflow-y: auto; }
 .callout a.button { display: block; }
 tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
@@ -31,7 +32,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 
 <div class="grid-x" style="padding: 10px 0 0;">
 	<div class="cell small-7"><h5 class="text-center">전체 변경 이력</h5></div>
-	<div class="cell small-5"><h5 class="text-center">변경된 파일</h5></div>
+	<div class="cell small-5"><h5 class="text-center">배포 후 변경된 파일</h5></div>
 </div>
 
 <div class="grid-x contents-area">
@@ -40,7 +41,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 	<div class="cell small-7" style="padding: 0 20px 0 10px;">
 	  <table class="list-table">
 		<colgroup>
-			<col width="3%"/>
+			<col width="7%"/>
 			<col width="7%"/>
 			<col width="12%"/>
 			<col width="17%"/>
@@ -68,7 +69,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 				<td class="text-center">{{method}}</td>
 				<td class="text-center">{{type}}</td>
 				<td class="text-left">{{#title}}{{title}}{{/title}}</td>
-				<td class="text-left"><a href="/history/{{id}}" target="_blank">{{#filePath}}{{filePath}}{{/filePath}}</a></td>
+				<td class="text-left"><a href="/history/{{id}}" target="ifrm">{{#filePath}}{{filePath}}{{/filePath}}</a></td>
 				<td class="text-left">{{#comment}}{{comment}}{{/comment}}</td>
 				<td class="text-center">{{#userid}}{{userid}}{{/userid}}</td>
 				<td class="text-center">{{updDtStr}}</td>
@@ -95,6 +96,8 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 			<thead>
 				<tr>
 					<th>작업</th>
+					<th>파일구분</th>
+					<th>이름</th>
 					<th>파일명</th>
 					<th>최종변경일시</th>
 				</tr>
@@ -102,7 +105,9 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 			<tbody>
    				{{#clist}}
 				<tr>
-					<td class="text-center"><i class="{{status}}"></i></td>
+					<td class="text-center">{{method}}</td>
+					<td class="text-center">{{type}}</td>
+					<td>{{#title}}{{title}}{{/title}}</td>
 					<td>{{#filePath}}{{filePath}}{{/filePath}}</td>
 					<td class="text-center">{{updDtStr}}</td>
 				</tr>
@@ -118,7 +123,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 	
 </div>
 
-<iframe id="ifrm" style="display: none;"></iframe>
+<iframe id="ifrm" name="ifrm" style="display: none;"></iframe>
 
 {{#script}}
 <script src="/page/release.js"></script>
