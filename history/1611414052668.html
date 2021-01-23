@@ -33,8 +33,11 @@
 		      <li class="menu-text">			
 		      	<div class="logo-img"></div>
 			  </li>
-		      <li th:each="item : ${group}" th:class="|${item.className}|" >
-		      	<a th:href="|./${item.groupId}.html|" th:text="${item.name}"></a>
+		      <li class="is-active" >
+		      	<a href="./domestic.html">국내주식</a>
+		      </li>
+		      <li >
+		      	<a href="./inter.html">해외주식</a>
 		      </li>
 		    </ul>
 		  </div>
@@ -89,10 +92,9 @@
 <script src="./resources/jquery/jquery-ui.min.js"></script>
 <script src="./resources/jquery/fancytree/jquery.fancytree.min.js"></script>
 <script src="./resources/jquery/fancytree/modules/jquery.fancytree.filter.js"></script>
-<script th:inline="javascript">
+<script>
 /*<![CDATA[*/
-var SOURCE = [[${tree}]];
-window.onhashchange = goHashLocation;
+var SOURCE = [{"folder":true,"key":"00001","title":"[0100] \uC785\uCD9C\uAE08","children":null,"order":0},{"folder":null,"key":"00002","title":"(0767)\uD22C\uC790\uC815\uBCF4 Magazine","children":null,"order":0},{"folder":null,"key":"00017","title":"[0515] \uC2E4\uC2DC\uAC04 \uC870\uAC74\uAC80\uC0C9","children":null,"order":0},{"folder":true,"key":"00015","title":"[1000] \uC8FC\uBB38","children":[{"folder":null,"key":"00018","title":"\uC8FC\uBB38\/\uCCB4\uACB0- [1020](\uC8FC\uC2DD) \uB2E8\uACC4\uC88C\uB2E4\uC885\uBAA9\uC8FC\uBB38","children":null,"order":0},{"folder":true,"key":"00019","title":"\uC0C8 \uD3F4\uB354","children":[{"folder":true,"key":"00021","title":"\uC0C8 \uD3F4\uB354","children":[{"folder":null,"key":"00022","title":"(0767)\uD22C\uC790\uC815\uBCF4 Magazine","children":null,"order":0},{"folder":null,"key":"00023","title":"[1020](\uC8FC\uC2DD) \uB2E8\uACC4\uC88C\uB2E4\uC885\uBAA9\uC8FC\uBB38","children":null,"order":0}],"order":0},{"folder":null,"key":"00044","title":"\uC0C8 \uB3C4\uC6C0\uB9D0 (44)","children":null,"order":0}],"order":0},{"folder":true,"key":"00052","title":"\uC0C8 \uD3F4\uB354 (52)","children":null,"order":0}],"order":0},{"folder":null,"key":"00026","title":"[7030]New \uC2A4\uD53C\uB4DC\uC8FC\uBB381","children":null,"order":0},{"folder":null,"key":"00028","title":"[7030]New \uC2A4\uD53C\uB4DC\uC8FC\uBB382","children":null,"order":0},{"folder":true,"key":"00029","title":"\uC0C8 \uD3F4\uB354111","children":[{"folder":null,"key":"00030","title":"\uC0C8 \uB3C4\uC6C0\uB9D0","children":null,"order":0}],"order":0},{"folder":null,"key":"00034","title":"\uC0AC\uC5C5\uBE44 \uC810\uAC80 \uB9E4\uB274\uC5BC","children":null,"order":0},{"folder":null,"key":"00033","title":"\uC0C1\uD45C\uB4F1\uB85D\uCD9C\uC6D0\uC11C","children":null,"order":0},{"folder":null,"key":"00035","title":"NIPA GPU","children":null,"order":0},{"folder":null,"key":"00037","title":"Statement Inquiry","children":null,"order":0},{"folder":null,"key":"00041","title":"better tomorrow","children":null,"order":0},{"folder":null,"key":"00049","title":"\uC0C1\uD45C\uB4F1\uB85D\uCD9C\uC6D0\uC11C","children":null,"order":0},{"folder":null,"key":"00062","title":"\uC778\uACF5\uC9C0\uB2A5 \uD611\uC57D","children":null,"order":0}];
 window.alert = function(message) {
 	var x = document.getElementById("snackbar");
 	x.className = "show";
