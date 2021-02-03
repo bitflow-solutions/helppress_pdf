@@ -59,7 +59,11 @@ public class ApiContentsGroupController {
 		if (username==null) {
 			ret.setFailResponse(401);
 		} else {
-			String res = gservice.newGroup(params, username);
+			try {
+				String res = gservice.newGroup(params, username);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return ret;
 	}
@@ -97,12 +101,16 @@ public class ApiContentsGroupController {
 		if (username==null) {
 			ret.setFailResponse(401);
 		} else {
-			ContentsGroup res = gservice.updateGroup(params, username);
-			ContentsGroupResult rst = new ContentsGroupResult();
-			rst.setGroupId(res.getGroupId());
-			rst.setTree(new Gson().fromJson(res.getTree(), new TypeToken<List<Node>>(){}.getType()));
-			ret.setResult(rst);
-			broker.convertAndSend("/group", rst);
+			try {
+				ContentsGroup res = gservice.updateGroup(params, username);
+				ContentsGroupResult rst = new ContentsGroupResult();
+				rst.setGroupId(res.getGroupId());
+				rst.setTree(new Gson().fromJson(res.getTree(), new TypeToken<List<Node>>(){}.getType()));
+				ret.setResult(rst);
+				broker.convertAndSend("/group", rst);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return ret;
 	}

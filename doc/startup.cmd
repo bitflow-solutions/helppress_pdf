@@ -1,1 +1,1 @@
-start javaw -jar kapa-digital-open-0.9.8-SNAPSHOT.jar
+start javaw -jar helppress.jar

@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +21,6 @@ import ai.bitflow.helppress.publisher.vo.req.ContentsReq;
 public class ContentsService implements ApplicationConstant {
 
 	private final Logger logger = LoggerFactory.getLogger(ContentsService.class);
-	
-	@Value("${app.history.root.path}")
-	private String HISTORY_ROOT_PATH;
 	
 	@Autowired
 	private ContentsRepository contentsrepo;

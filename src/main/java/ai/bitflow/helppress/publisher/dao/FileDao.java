@@ -237,6 +237,7 @@ public class FileDao {
 	 */
 	public boolean makeAllContentGroupHTML(List<ContentsGroup> list, String method, String userid) {
 		
+		logger.debug("makeAllContentGroupHTML");
 		// All contents group
 		String type   = ApplicationConstant.TYPE_GROUP;
 		long now = Calendar.getInstance().getTimeInMillis();
@@ -248,6 +249,7 @@ public class FileDao {
 			Context ctx = new Context();
 			ctx.setVariable("group", list);
 			ctx.setVariable("tree",  new Gson().fromJson(item1.getTree(), new TypeToken<List<Node>>(){}.getType()));
+			logger.debug("ctx " + ctx.getVariable("tree"));
 			String htmlCodes = this.tengine.process("hp-group-template.html", ctx);
 			long fileTimeInMillis = now + i + 1;
 			makeNewContentGroupTemplate(item1, htmlCodes, fileTimeInMillis);
@@ -269,6 +271,7 @@ public class FileDao {
 	}
 	
 	public void makeOneContentGroupHTML(ContentsGroup item1, long now) {
+		logger.debug("makeOneContentGroupHTML");
 		List<ContentsGroup> list = grepo.findAll();
 		item1.setClassName("is-active");
 		// Write to HTML file
@@ -322,9 +325,14 @@ public class FileDao {
 	 */
 	public boolean makeNewContentGroupTemplate(ContentsGroup item, String htmlCodes, long now) {
 		
-		File dir = new File(UPLOAD_ROOT_PATH);
-		if (!dir.exists()) {
-			boolean success = dir.mkdirs();
+		File dir1 = new File(UPLOAD_ROOT_PATH);
+		if (!dir1.exists()) {
+			boolean success = dir1.mkdirs();
+		}
+		
+		File dir2 = new File(HISTORY_ROOT_PATH);
+		if (!dir2.exists()) {
+			boolean success = dir2.mkdirs();
 		}
 		
 		BufferedWriter writer1 = null;
@@ -366,9 +374,14 @@ public class FileDao {
 	 */
 	private boolean makeNewIndexHtml(String htmlCodes, long now) {
 		
-		File dir = new File(UPLOAD_ROOT_PATH);
-		if (!dir.exists()) {
-			boolean success = dir.mkdirs();
+		File dir1 = new File(UPLOAD_ROOT_PATH);
+		if (!dir1.exists()) {
+			boolean success = dir1.mkdirs();
+		}
+		
+		File dir2 = new File(HISTORY_ROOT_PATH);
+		if (!dir2.exists()) {
+			boolean success = dir2.mkdirs();
 		}
 		
 		BufferedWriter writer1 = null;

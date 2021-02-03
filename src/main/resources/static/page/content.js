@@ -753,11 +753,13 @@ $(function() {
 	if (hash.length>1) {
 		$("#sel_category").val(hash.substring(1));
 		onSelectChanged($("#sel_category").get(0));
+		$(".spinner").hide();
 	} else {
 		if (document.getElementById("sel_category").length>1) {
 			$("#sel_category option:eq(1)").attr("selected", "selected");
 		    onSelectChanged($("#sel_category").get(0));
 		    location.href = "#" + $("#sel_category option:selected").val();
 		}
+		$(".spinner").hide();
 	}
 });
