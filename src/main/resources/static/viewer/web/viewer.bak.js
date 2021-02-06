@@ -3843,7 +3843,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var CSS_UNITS = 96.0 / 72.0;
 exports.CSS_UNITS = CSS_UNITS;
-var DEFAULT_SCALE_VALUE = "page-width";
+var DEFAULT_SCALE_VALUE = "page-fit";
 exports.DEFAULT_SCALE_VALUE = DEFAULT_SCALE_VALUE;
 var DEFAULT_SCALE = 1.0;
 exports.DEFAULT_SCALE = DEFAULT_SCALE;
@@ -14580,8 +14580,7 @@ function getDefaultPreferences() {
   if (!defaultPreferences) {
     defaultPreferences = Promise.resolve({
       "cursorToolOnLoad": 0,
-	  // method76 changed 130 -> page-width
-      "defaultZoomValue": "page-width",
+      "defaultZoomValue": "130",
       "disablePageLabels": false,
       "enablePermissions": false,
       "enablePrintAutoRotate": false,

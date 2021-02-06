@@ -37,7 +37,7 @@ See https://github.com/adobe-type-tools/cmap-resources
 	.toolbar { display: none; }
 	#viewerContainer { top: 0; }
 	#viewer { padding-top: 30px; padding-bottom: 30px; }
-	.pdfViewer .page { border-image: inherit; }
+	.pdfViewer .page { border-image: inherit; margin: 0; }
 	#errorWrapper { width: calc(100% - 44px); height: 100%; background: #f7f7f7; }
 	#errorWrapper > img { margin: auto; position: absolute; left: calc(50% - 312px); top: calc(50% - 259px); }
 	.loadingInProgress #errorWrapper { top: 0; }
@@ -248,10 +248,10 @@ See https://github.com/adobe-type-tools/cmap-resources
                 </div>
                 <span id="scaleSelectContainer" class="dropdownToolbarButton">
                   <select id="scaleSelect" title="Zoom" tabindex="23" data-l10n-id="zoom">
-                    <option id="pageAutoOption" title="" value="auto" selected="selected" data-l10n-id="page_scale_auto">Automatic Zoom</option>
+                    <option id="pageAutoOption" title="" value="auto" data-l10n-id="page_scale_auto">Automatic Zoom</option>
                     <option id="pageActualOption" title="" value="page-actual" data-l10n-id="page_scale_actual">Actual Size</option>
                     <option id="pageFitOption" title="" value="page-fit" data-l10n-id="page_scale_fit">Page Fit</option>
-                    <option id="pageWidthOption" title="" value="page-width" data-l10n-id="page_scale_width">Page Width</option>
+                    <option id="pageWidthOption" title="" value="page-width" data-l10n-id="page_scale_width" selected="selected">Page Width</option>
                     <option id="customScaleOption" title="" value="custom" disabled="disabled" hidden="true"></option>
                     <option title="" value="0.5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 50 }'>50%</option>
                     <option title="" value="0.75" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 75 }'>75%</option>

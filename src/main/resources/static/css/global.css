@@ -21,15 +21,17 @@ a:hover { color: #05854A; }
 .button-group .button + .button { margin-left: 3px; }
 .reveal { border-radius: 3px; border: 1px solid #555; }
 .login-body-wrapper { height: 100%; }
+#bf-menu-code, #bf-content-comment { margin-bottom: 0; }
+#err-menu-code, #err-no-comment { display: none; color: red; margin-top:0; margin-bottom: 0; font-size: 12px; }
 select { border: 1px solid #05854A; color: #05854A;  border-radius: 3px; max-width: 260px; }
-.contents-wrapper { background: url(/img/bg-contents-gray.jpg); }
+.contents-wrapper { width: calc(100% - 300px); }
 .se:not(#se-t).se-document-editor .se-main .se-contents-edit>.se-contents {
 	padding-top: 96px; width: 831px !important; }
 .bf-body-wrapper > .callout.secondary { border-top: 0; }
 .reveal .button-group { margin-bottom: 0; }
 #tree { width: min-content; min-height: 100%; }
 #tree, #tree > ul { border: none; outline: none; }
-.tree-wrapper { height: 100%; overflow-y: auto; }
+.tree-wrapper { height: 100%; width: 300px; overflow-y: auto; }
 span.fancytree-selected span.fancytree-title, span.fancytree-active span.fancytree-title { border: none; outline: none; }
 span.fancytree-node { height: 21px; }
 ul.fancytree-container li { min-height: 21px!important; }

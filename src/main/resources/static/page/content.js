@@ -145,6 +145,16 @@ function initEvents() {
 	$("#btn-download").click(downloadContent);
 	$("#btn-expand-all").click(expandAll);
 	$("#btn-collapse-all").click(collapseAll);
+	$("#btn-comment-close").click(function() {
+		$("#err-no-comment").hide();
+		$("#bf-modal-comment").foundation('close');
+	});
+	$("#bf-menu-code").keyup(function(event) {
+		if (!(event.keyCode>=37 && event.keyCode<=40)) {
+			var inputVal = $(this).val();
+			$(this).val(inputVal.replace(/[^A-Z0-9]/gi, ''));
+		}
+	});
 	$("#btn-modify-complete").click(function(e) {
 		// 도움말 수정완료 버튼 클릭
 		$("#btn-modify-complete").hide();
@@ -371,9 +381,13 @@ function loadPage(key) {
 }
 
 function doUpload() {
-  if ($("#bf-content-comment").val().length<1) {
-	alert("도움말 변경 사유를 입력해주세요");
+  if ($("#bf-menu-code").val().length<5) {
+  	$("#err-menu-code").show();
+  } else if ($("#bf-content-comment").val().length<1) {
+  	$("#err-no-comment").show();
   } else {
+  	$("#err-menu-code").hide();
+  	$("#err-no-comment").hide();
 	$("#bf-modal-comment").foundation('close');
     $("#pdfFile").click();
   }
@@ -686,33 +700,6 @@ function initSocket() {
         });
         stompClient.subscribe('/node', function (rawmsg) {
           saveTree();
-          /*
-          var msg = JSON.parse(rawmsg.body);
-          if (selectedGroupId===msg.groupId) {
-            if (msg.method=="ADD") {
-            	var existingNode = _tree.getNodeByKey(msg.key);
-            	// console.log('existingNode ' + existingNode);
-            	if (existingNode) {
-            	  return;
-            	}
-            	var parent = _tree.getNodeByKey(msg.parentKey);
-            	var child = { key: msg.key, title: msg.title };
-            	if (msg.folder!==null) {
-            		child["folder"] = msg.folder;
-            	} 
-            	parent.addNode(child, 'child');
-            }else if (msg.method=="DEL") {
-			  var node = _tree.getNodeByKey(msg.key);
-			  if (node) {
-			  	node.remove();
-		  	  }
-		  	  // Todo: 첫번쨰 노드 선택되도록
-			}else if (msg.method=="REN") {
-			  var node = _tree.getNodeByKey(msg.key);
-			  node.setTitle(msg.title);
-            }
-	  	  }
-	  	  */
         });
     });
 }
