@@ -52,20 +52,20 @@
 	<div class="grid-x contents-grid-wrapper">
 		
 		<!-- 좌측 컨텐츠그룹 선택 및 메뉴 구조 TREE -->
-		<div class="cell small-3 tree-wrapper">
+		<div class="cell tree-wrapper">
 			<div id="search-wrapper">
-				<input id="input-search" name="search" placeholder="검색어 입력" autocomplete="off">
+				<input id="input-search" name="search" placeholder="검색어 입력" autocomplete="off" maxlength="50">
 				<button id="btnResetSearch">&times;</button>
-				<img id="img-search" src="./resources/img/ic-search.png">
+				<img id="img-search" src="./resources/img/btn_search.png">
 				<span id="matches"></span>
 			</div>
 			<div id="tree"></div>
 		</div>
 		
 		<!-- 컨텐츠 상세내용 --> <!-- 706px for A4 -->
-		<div class="cell small-9 contents-wrapper">
+		<div class="cell contents-wrapper">
 		  <div class="grid-x" style="height: 100%;">
-		    <iframe id="contents-detail" name="ifrm" class="cell" width="100%" height="100%" frameborder="0" border="0" style="border:0;"></iframe>
+		    <iframe id="contents-detail" name="ifrm" class="cell" width="100%" height="100%" frameborder="0" border="0" style="border:0;" src="./resources/viewer/web/empty.html"></iframe>
 		  </div>
 	    </div>
 		
