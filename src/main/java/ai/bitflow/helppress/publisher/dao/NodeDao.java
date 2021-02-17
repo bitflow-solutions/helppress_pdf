@@ -75,6 +75,28 @@ public class NodeDao {
 	}
 	
 	/**
+	 * 노드 키 변경
+	 * @param params
+	 * @return
+	 */
+	public boolean updateNodeKey(String groupId, String before, String after) {
+		Optional<ContentsGroup> row = grepo.findById(groupId);
+		ContentsGroup item1 = null;
+		boolean found = false;
+		if (!row.isPresent()) {
+			return false;
+		} else {
+			item1 = row.get();
+			List<Node> tree = new Gson().fromJson(item1.getTree(), new TypeToken<List<Node>>(){}.getType());
+			findNodeAndUpdate(tree, before, after);
+			String treeStr = new Gson().toJson(tree);
+			item1.setTree(treeStr);
+			grepo.save(item1);
+			return found;
+		}
+	}
+	
+	/**
 	 * 트리 노드 삭제
 	 * @param params
 	 * @return
@@ -93,6 +115,22 @@ public class NodeDao {
 			item1.setTree(treeStr);
 			grepo.save(item1);
 			return found;
+		}
+	}
+	
+	private void findNodeAndUpdate(List<Node> nodes, String before, String after) {
+		if (nodes!=null && nodes.size()>0) {
+			for (Node item : nodes) {
+				if (item.getKey().equals(before)) {
+					item.setKey(after);
+					logger.debug("found item to delete");
+					break;
+				} else {
+					if (item.getChildren()!=null && item.getChildren().size()>0) {
+						findNodeAndUpdate(item.getChildren(), before, after);
+					}
+				}
+			}
 		}
 	}
 	

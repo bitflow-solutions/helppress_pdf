@@ -15,4 +15,6 @@ public class UpdateNodeReq {
 	private String parentKey;
 	private Integer index;
 
+	// To change menuCode
+	private String menuCode;
 }

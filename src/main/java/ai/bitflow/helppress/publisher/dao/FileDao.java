@@ -1,3 +1,4 @@
+
 package ai.bitflow.helppress.publisher.dao;
 
 import java.io.BufferedWriter;
@@ -199,18 +200,29 @@ public class FileDao {
 	 */
 	public boolean newPdfFile(ContentsReq params, Contents item, long now) {
 		
-		File dir = new File(UPLOAD_ROOT_PATH);
+		File dir = new File(UPLOAD_ROOT_PATH + item.getGroupId());
+		if (!dir.exists()) {
+			boolean success = dir.mkdirs();
+		}
+		dir = new File(HISTORY_ROOT_PATH + item.getGroupId());
 		if (!dir.exists()) {
 			boolean success = dir.mkdirs();
 		}
 		 
+		String fileName = params.getMenuCode();
+		if (fileName==null) {
+			logger.error("Cannot find the menucode parameter");
+			return false;
+		}
+		
 		FileOutputStream writer1 = null;
 		FileOutputStream writer2 = null;
 		try {
-			writer1 = new FileOutputStream(UPLOAD_ROOT_PATH + String.format("%05d" , item.getId()) + ApplicationConstant.EXT_PDF);
+			
+			writer1 = new FileOutputStream(UPLOAD_ROOT_PATH + item.getGroupId() + File.separator + fileName + ApplicationConstant.EXT_PDF);
 			writer1.write(params.getFile1().getBytes());
 
-			writer2 = new FileOutputStream(HISTORY_ROOT_PATH + now + ApplicationConstant.EXT_PDF);
+			writer2 = new FileOutputStream(HISTORY_ROOT_PATH + item.getGroupId() + File.separator + now + ApplicationConstant.EXT_PDF);
 			writer2.write(params.getFile1().getBytes());
 		    return true;
 		} catch (IOException e) {
@@ -261,11 +273,11 @@ public class FileDao {
 				makeNewIndexHtml(indexHtmlCodes, now);
 				// 변경이력 저장
 				chdao.addHistory(userid, type, method, "메인 인덱스 파일", "index" + ApplicationConstant.EXT_HTML
-						, now + ApplicationConstant.EXT_HTML, "도움말 그룹 수정");
+						, now + ApplicationConstant.EXT_HTML, "도움말그룹 추가");
 			}
 			// 변경이력 저장
 			chdao.addHistory(userid, type, method, item1.getName(), item1.getGroupId() + ApplicationConstant.EXT_HTML
-					, fileTimeInMillis + ApplicationConstant.EXT_HTML, "도움말 그룹 수정");
+					, fileTimeInMillis + ApplicationConstant.EXT_HTML, "도움말그룹 추가");
 		}
 		return true;
 	}

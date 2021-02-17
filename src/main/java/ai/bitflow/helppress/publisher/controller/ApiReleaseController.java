@@ -57,10 +57,10 @@ public class ApiReleaseController {
 	 * @param key
 	 * @param res
 	 */
-	@GetMapping("/{key}") 
-	public void downloadOne(@PathVariable String key, HttpServletResponse res) {
+	@GetMapping("/{groupId}/{contentId}") 
+	public void downloadOne(@PathVariable String groupId, @PathVariable String contentId, HttpServletResponse res) {
 		log.debug("downloadOne");
-		rservice.downloadOne(key, res);
+		rservice.downloadOne(groupId, contentId, res);
 	}
 	
 	/**

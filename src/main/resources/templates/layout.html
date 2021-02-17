@@ -40,7 +40,7 @@
   <div class="top-bar-right">
     <ul class="menu">
       <li class="{{#tab5}}{{tab5}}{{/tab5}}"><a href="/user">사용자관리</a></li>
-      <li><a href="//localhost" target="_preview">미리보기</a></li>
+      <li><a href="/export" target="_preview">미리보기</a></li>
       <li><a class="button secondary hollow" data-open="bf-modal-user">{{userid}}님</a></li>
     </ul>
   </div>
@@ -72,10 +72,11 @@
 	<!-- Modal #comment -->
 	<div class="reveal tiny" id="bf-modal-comment" data-reveal>
 	  <p><i class="fi-page-filled"></i>&nbsp;&nbsp;PDF 파일 업로드</p>
-	  <label>메뉴코드<input type="text" id="bf-menu-code" maxlength="5" placeholder="5자리 숫자/영대문자 코드" /></label>
-	  <p id="err-menu-code">※ 메뉴코드는 5자리로 입력해주세요!</p>
+	  <label>메뉴코드<input type="text" id="bf-menu-code" maxlength="5" placeholder="4~5자리 영숫자 코드" /></label>
+	  <p id="err-menu-code">※ 메뉴코드는 4자리 이상 입력해주세요</p>
+	  <p id="err-dupe-id">※ 중복된 메뉴코드가 있습니다</p>
 	  <label style="margin-top: 12px;">등록/변경사유<input type="text" id="bf-content-comment" maxlength="50" placeholder="사유 (50자 이내)" /></label>
-	  <p id="err-no-comment">※ 도움말 등록/변경 사유를 입력해주세요!</p>
+	  <p id="err-no-comment">※ 도움말 등록/변경 사유를 입력해주세요</p>
 	  <br>
 	  <div class="button-group float-right">
 		<a class="button secondary hollow" id="btn-comment-close">취소</a>

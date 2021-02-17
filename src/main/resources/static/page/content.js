@@ -1,7 +1,8 @@
-var editor, selectedGroupId, selectedContentId, selectedContentTitle, htmlToOpen = null, isRTF = false;
+var editor, selectedGroupId, selectedContentId, selectedContentTitle, inputMenuCode, htmlToOpen = null, isRTF = false;
 var SOURCE = [];
 var _tree = null;
-const URL_API_NODE = "/api/v1/ecm/node";
+const URL_API_NODE    = "/api/v1/ecm/node";
+const URL_API_CONTENT = "/api/v1/ecm/content/";
 
 function initTree() {
   $('#tree').fancytree({
@@ -15,7 +16,6 @@ function initTree() {
       adjustWidthOfs: 4,   // null: don't adjust input size to content
       inputCss: { minWidth: "120px" },
       save: function(e, data) {
-      	/*console.log('save ' + e + ' ' + data);*/
         renameTitle(e, data);
         return true;
       },
@@ -117,10 +117,6 @@ function initTree() {
 	  	$("#btn-delete").show();
 	  	$("#btn-download").show();
 	  	$("#btn-pdf-upload").show();
-		/*	  	
-		$("#btn-modify").show();
-	  	$("#btn-modify-complete").hide();
-		*/
 	  	// 도움말 표시
 	  	loadPage(node.key);
 		$("#contents-detail").scrollTop();
@@ -129,10 +125,6 @@ function initTree() {
 	  	$("#btn-delete").show();
 	  	$("#btn-download").hide();
 	  	$("#btn-pdf-upload").hide();
-		/*
-	  	$("#btn-modify").hide();
-	  	$("#btn-modify-complete").hide();
-		*/
 	  }
 	}
   });
@@ -149,6 +141,16 @@ function initEvents() {
 		$("#err-no-comment").hide();
 		$("#bf-modal-comment").foundation('close');
 	});
+	$("#btn-pdf-upload").click(function() {
+	  console.log('selectedContentId ' + selectedContentId);
+	  if (selectedContentId && selectedContentId.length>3 && selectedContentId.charAt(0)!=='!' ) {
+		$("#bf-menu-code").val(selectedContentId);
+		$("#bf-menu-code").attr("readonly", true);
+	  } else {
+		$("#bf-menu-code").val("");
+		$("#bf-menu-code").attr("readonly", false);
+	  }
+    });
 	$("#bf-menu-code").keyup(function(event) {
 		if (!(event.keyCode>=37 && event.keyCode<=40)) {
 			var inputVal = $(this).val();
@@ -159,7 +161,7 @@ function initEvents() {
 		// 도움말 수정완료 버튼 클릭
 		$("#btn-modify-complete").hide();
 		$(".spinner").show();
-		var url = "/api/v1/ecm/content/" + selectedContentId;
+		var url = URL_API_CONTENT + selectedGroupId + "/" + selectedContentId;
 		$.ajax({
 			url: url,
 			method: "PUT",
@@ -257,7 +259,6 @@ function fallbackCopyTextToClipboard(text) {
   } catch (err) {
     console.error('Fallback: Oops, unable to copy', err);
   }
-
   document.body.removeChild(textArea);
 }
 
@@ -276,6 +277,9 @@ function lazyOpenHtml() {
 	editor.openHTML(htmlToOpen);
 }
 
+/**
+ * (HTML 에디터를 사용하는 경우) 에디터 초기화
+ */
 function initEditor() {
   synapEditorConfig['editor.type'] = 'document';
   editor = new SynapEditor('synapEditor', synapEditorConfig);
@@ -305,7 +309,10 @@ function findParents(node) {
 	}
 }
 
-function saveTree() {
+/**
+ * 메뉴 트리 로딩
+ */
+function loadTree() {
   $(".spinner").show();
   $.ajax({
 	  url: "/api/v1/ecm/group/" + selectedGroupId,
@@ -315,6 +322,7 @@ function saveTree() {
 	  if (msg.status==401) {
 	  	location.href = "/logout";
 	  } else {
+		  location.href = "#" + selectedGroupId;
 		  _tree.reload(msg.result.tree).done(function() {
 		  	if (selectedContentId) {
 		  	  try {
@@ -331,7 +339,9 @@ function saveTree() {
 		  });
 	  }
 	})
-	.fail(function() { })
+	.fail(function() {
+		// $(".spinner").hide();
+	})
 	.always(function() {
 		setTimeout(function() {
 			$(".spinner").hide();
@@ -339,8 +349,11 @@ function saveTree() {
 	});
 }
 
+/**
+ * (HTML 도움말인 경우) 도움말 수정
+ */
 function editContent() {
-  var url = "/api/v1/ecm/content/" + selectedContentId;
+  var url = URL_API_CONTENT + selectedGroupId + "/" + selectedContentId;
   $.ajax({
 	url: url,
 	method: "GET"
@@ -356,40 +369,53 @@ function editContent() {
   });
 }
 
+/**
+ * 도움말 상세 불러오기
+ */
 function loadPage(key) {
   $("#editor-wrapper").hide();
-  $("#contents-detail").attr("src", "/viewer/web/viewer.html?file=/" + key + ".pdf");
+  $("#contents-detail").attr("src", "/viewer/web/viewer.html?file=/" + selectedGroupId + "/" + key + ".pdf");
   $.ajax({
-		url: "/" + key + ".pdf",
+		url: "/" + selectedGroupId + "/" + key + ".pdf",
 		method: "GET",
 		statusCode: {
-	        404: function(responseObject, textStatus, jqXHR) {
+	        404: function(res, status, jqXHR) {
 	            $("#btn-modify").text("글쓰기");
 	            $("#btn-delete").hide();
 	            $("#btn-download").hide();
 				$("#contents-detail").attr("src", "/404.html");
 	        },
-	        200: function(responseObject, textStatus, errorThrown) {
+	        200: function(res, status, err) {
 	            $("#btn-modify").text("수정");
 	            $("#btn-delete").show();
 	            $("#btn-download").show();
 	        }           
 	    }
-	});
-  
+  });
   $("#contents-detail").show();
 }
 
+/**
+ * 업로드 처리
+ */
 function doUpload() {
-  if ($("#bf-menu-code").val().length<5) {
+	console.log('$("#bf-menu-code").attr("readonly") ' + $("#bf-menu-code").attr("readonly"));
+  $("#err-menu-code").hide();
+  $("#err-dupe-id").hide();
+  $("#err-no-comment").hide();
+  if ($("#bf-menu-code").val().length<4) {
   	$("#err-menu-code").show();
+  } else if ($("#bf-menu-code").attr("readonly")!=='readonly' && _tree.getNodeByKey($("#bf-menu-code").val())) {
+	$("#err-dupe-id").show();
   } else if ($("#bf-content-comment").val().length<1) {
   	$("#err-no-comment").show();
   } else {
-  	$("#err-menu-code").hide();
+	inputMenuCode = $("#bf-menu-code").val();
+	$("#err-dupe-id").hide();
+	$("#err-menu-code").hide();
   	$("#err-no-comment").hide();
 	$("#bf-modal-comment").foundation('close');
-    $("#pdfFile").click();
+    $("#pdfFile").click();	
   }
 }
 
@@ -414,7 +440,7 @@ function renameTitle(e, data) {
 		  if (msg.status==401) {
 		  	location.href = "/logout";
 		  } else {
-	        saveTree();
+	        loadTree();
 		  }
 		})
 		.always(function() {
@@ -447,7 +473,7 @@ function appendChildFolder() {
 			parent.addNode(child, 'child');
 			// parent.setExpanded();
     	}
-        saveTree();
+        loadTree();
 	  }
 	})
 	.fail(function() { })
@@ -476,7 +502,7 @@ function appendChildContent() {
 			parent.addNode(child, 'child');
 			// parent.setExpanded();
     	}
-        saveTree();
+        loadTree();
 	  }
 	})
 	.fail(function() { })
@@ -501,7 +527,7 @@ function appendRootFolder() {
 			parent.addNode(child, 'child');
     	}
     	console.log('tree ' + JSON.stringify(msg.result.tree));
-        saveTree();
+        loadTree();
 	  }
 	})
 	.fail(function() {
@@ -511,7 +537,6 @@ function appendRootFolder() {
 }
 
 function appendRootContent() {
-  
   var parent = _tree.getRootNode();
   $.ajax({
 	  url: URL_API_NODE,
@@ -528,7 +553,7 @@ function appendRootContent() {
 			parent.addNode(child, 'child');
     	}
     	console.log('tree ' + JSON.stringify(msg.result.tree));
-        saveTree();
+        loadTree();
 	  }
 	})
 	.fail(function() { })
@@ -551,14 +576,14 @@ function deleteContent() {
 			  $.ajax({
 				  url: URL_API_NODE,
 				  method: "DELETE",
-				  data: { groupId: selectedGroupId, key: node.key, child: childContentsArr, folder: true, title:  node.title }
+				  data: { groupId: selectedGroupId, key: node.key, child: childContentsArr, folder: true, title: node.title }
 			  	})
 				.done(function(msg) {
 				  if (msg.status==401) {
 				  	location.href = "/logout";
 				  } else {
 				    node.remove();
-			        saveTree();
+			        loadTree();
 				  }
 				})
 				.fail(function() {
@@ -587,9 +612,9 @@ function deleteContent() {
 			          }
 					});
 					if (firstNode===null) {
-		        	  saveTree();
+		        	  loadTree();
 				    } else {
-				      saveTree(firstNode);
+				      loadTree(firstNode);
 				    }
 				  }
 				})
@@ -619,6 +644,9 @@ function getChildrenRecursive(node, arr) {
 	}
 }
 
+/**
+ * PDF 도움말 다운로드
+ */
 function downloadContent() {
   var node = _tree.getActiveNode();
   if( !node ) {
@@ -627,7 +655,7 @@ function downloadContent() {
   }
   var key = node.key;
   $(".spinner").show();
-  $("#ifrm").attr("src", "/api/v1/ecm/release/" + key);
+  $("#ifrm").attr("src", "/api/v1/ecm/release/" + selectedGroupId + "/" + key);
   setTimeout(function() {
 	$(".spinner").hide();
   }, 3000);
@@ -643,6 +671,9 @@ function editTitle() {
   node.editStart();
 }
 
+/**
+ * 도움말 그룹 콤보박스가 변경되었을 때 발생하는 이벤트
+ */
 function onSelectChanged(select) {
   selectedGroupId = select.options[select.selectedIndex].value;
   if (!selectedGroupId || selectedGroupId.length<1) {
@@ -652,40 +683,29 @@ function onSelectChanged(select) {
 	  $(".contents-wrapper").css("background", "url(/img/bg-contents-gray.jpg)");
 	  $("#contents-detail").attr("src", "about:blank");
   } else {
+	  $("#tree").show();
 	  $(".tree-wrapper").css("background-image", "inherit");
 	  $(".contents-wrapper").css("background", "white");
-	  loadTree(selectedGroupId);
+	  loadTree();
   }
 }
 
-function loadTree(groupId) {
-	$.ajax({
-	  url: "/api/v1/ecm/group/" + groupId,
-	  method: "GET"
-	})
-	.done(function(msg) {
-	  $("#tree").show();
-	  if (msg && msg.result) {
-	  	_tree.reload(msg.result.tree);
-	  }
-	  location.href = "#" + groupId;
-	})
-	.fail(function() { })
-	.always(function() {
-		setTimeout(function() {
-			$(".spinner").hide();
-		}, 300);
-	});
-}
-
+/**
+ * 메뉴 트리 전체 펼침
+ */
 function expandAll() {
   _tree.expandAll();
 }
 
+/**
+ * 메뉴 트리 전체 접힘
+ */
 function collapseAll() {
   _tree.expandAll(false);
 }
-
+/**
+ * 실시간으로 메뉴 트리 변경사항 수신
+ */
 function initSocket() {
 	var socket = new SockJS('ws');
 	var stompClient = Stomp.over(socket);
@@ -695,15 +715,18 @@ function initSocket() {
         stompClient.subscribe('/group', function (msg) {
           console.log("groupId " + JSON.parse(msg.body).groupId);
           if (selectedGroupId===JSON.parse(msg.body).groupId) {
-	        _tree.reload(JSON.parse(JSON.parse(msg.body).tree));
+	        loadTree();
 	  	  }
         });
         stompClient.subscribe('/node', function (rawmsg) {
-          saveTree();
+          loadTree();
         });
     });
 }
 
+/**
+ * PDF 파일 업로드
+ */
 function handlePdf(file) {
 	console.log('file ' + file);
     var node = _tree.getActiveNode();
@@ -713,10 +736,15 @@ function handlePdf(file) {
 	var formData = new FormData(form);
 	formData.append("file1",   $("#pdfFile")[0].files[0]);
 	formData.append("title",   selectedContentTitle);
+	formData.append("key",     selectedContentId);
 	formData.append("comment", $("#bf-content-comment").val());
 	$("#bf-content-comment").val("");
+	if ($("#bf-menu-code").val().length>3) {
+		formData.append("menuCode", $("#bf-menu-code").val());
+		$("#bf-menu-code").val("");
+	}
 	$.ajax({
-	    url: '/api/v1/ecm/content/' + selectedContentId,
+	    url: '/api/v1/ecm/content/' + selectedGroupId,
         processData: false,
         contentType: false,
         data: formData,
@@ -724,6 +752,7 @@ function handlePdf(file) {
     })
     .done(function(msg) {
 	  console.log('msg ' + JSON.stringify(msg));
+	  selectedContentId = msg.result.key
 	  loadPage(selectedContentId);
 	});
 }
@@ -734,7 +763,6 @@ $(function() {
 	jQuery.ajaxSettings.traditional = true;
 	initTree();
 	initEvents();
-	// initEditor();
 	initSocket();
 	var hash = window.location.hash;
 	if (hash.length>1) {

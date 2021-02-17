@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 public class ContentsReq {
 
+	private String menuCode;
+	private String key;
 	private String title;
 	private String content;
 	private String comment;

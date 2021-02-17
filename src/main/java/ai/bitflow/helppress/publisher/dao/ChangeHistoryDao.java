@@ -37,7 +37,7 @@ public class ChangeHistoryDao {
 		item.setMethod(method);
 		item.setFilePath(filePath);
 		item.setRealPath(realPath);
-		item.setReleased(null);
+//		item.setReleased(null);
 		chrepo.save(item);
 	}
 

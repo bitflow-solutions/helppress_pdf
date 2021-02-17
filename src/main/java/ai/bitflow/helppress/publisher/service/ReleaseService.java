@@ -28,6 +28,7 @@ import ai.bitflow.helppress.publisher.dao.ChangeHistoryDao;
 import ai.bitflow.helppress.publisher.domain.ChangeHistory;
 import ai.bitflow.helppress.publisher.domain.Contents;
 import ai.bitflow.helppress.publisher.domain.ReleaseHistory;
+import ai.bitflow.helppress.publisher.domain.idclass.PkContents;
 import ai.bitflow.helppress.publisher.repository.ContentsRepository;
 import ai.bitflow.helppress.publisher.repository.ReleaseHistoryRepository;
 
@@ -128,17 +129,18 @@ public class ReleaseService {
 	
 	/**
 	 * 
-	 * @param key
+	 * @param contentId
 	 * @param res
 	 * @return
 	 */
-	public boolean downloadOne(String key, HttpServletResponse res) {
+	public boolean downloadOne(String groupId, String contentId, HttpServletResponse res) {
 
 		File destFile = null;
 		String DEST_FILENAME = null;
 		if (ApplicationConstant.EXT_PDF.equals(ApplicationConstant.EXT_CONTENT)) {
-			DEST_FILENAME = key + ApplicationConstant.EXT_CONTENT;
-			destFile = new File(SRC_FOLDER + DEST_FILENAME);
+			// PDF 파일인 경우
+			DEST_FILENAME = contentId + ApplicationConstant.EXT_CONTENT;
+			destFile = new File(SRC_FOLDER + groupId + File.separator + DEST_FILENAME);
 		} else {
 			File destFolder = new File(DEST_FOLDER);
 			if (!destFolder.exists()) {
@@ -146,7 +148,7 @@ public class ReleaseService {
 			}
 			
 			String timestamp = sdf.format(Calendar.getInstance().getTime());
-			DEST_FILENAME = "release-" + key + "-" + timestamp + ".zip";
+			DEST_FILENAME = "release-" + contentId + "-" + timestamp + ".zip";
 			String destFilePath = DEST_FOLDER + DEST_FILENAME;
 			destFile = new File(destFilePath);
 			try {
@@ -157,7 +159,8 @@ public class ReleaseService {
 			}
 			
 			Contents item1 = null;
-			Optional<Contents> row1 = crepo.findById(Integer.parseInt(key));
+			PkContents pk = new PkContents(groupId, contentId);
+			Optional<Contents> row1 = crepo.findById(pk);
 			if (row1.isPresent()) {
 				// 기존 파일 업데이트
 				item1 = row1.get();
@@ -166,20 +169,20 @@ public class ReleaseService {
 			}
 	
 			if (ApplicationConstant.TYPE_PDF.equals(item1.getType())) {
-				ZipUtil.packEntry(new File(SRC_FOLDER + key + ApplicationConstant.EXT_CONTENT), destFile);
+				ZipUtil.packEntry(new File(SRC_FOLDER + contentId + ApplicationConstant.EXT_CONTENT), destFile);
 			} else {
-				String resourcePath = SRC_FOLDER + ApplicationConstant.UPLOAD_REL_PATH + File.separator + key;
+				String resourcePath = SRC_FOLDER + ApplicationConstant.UPLOAD_REL_PATH + File.separator + contentId;
 				File resourceDir = new File(resourcePath);
 				if (resourceDir.exists() && resourceDir.isDirectory()) {
 					ZipUtil.pack(new File(resourcePath), destFile, new NameMapper() {
 						@Override
 						public String map(String name) {
-							 return ApplicationConstant.UPLOAD_REL_PATH + "/" + key + "/" + name;
+							 return ApplicationConstant.UPLOAD_REL_PATH + "/" + contentId + "/" + name;
 						}
 					});
-					ZipUtil.addEntry(destFile, key + ".html", new File(SRC_FOLDER + key + ".html"));
+					ZipUtil.addEntry(destFile, contentId + ".html", new File(SRC_FOLDER + contentId + ".html"));
 				} else {
-					ZipUtil.packEntry(new File(SRC_FOLDER + key + ".html"), destFile);
+					ZipUtil.packEntry(new File(SRC_FOLDER + contentId + ".html"), destFile);
 				}
 			}
 		}

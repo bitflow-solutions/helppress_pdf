@@ -22,7 +22,7 @@ a:hover { color: #05854A; }
 .reveal { border-radius: 3px; border: 1px solid #555; }
 .login-body-wrapper { height: 100%; }
 #bf-menu-code, #bf-content-comment { margin-bottom: 0; }
-#err-menu-code, #err-no-comment { display: none; color: red; margin-top:0; margin-bottom: 0; font-size: 12px; }
+#err-dupe-id, #err-menu-code, #err-no-comment { display: none; color: red; margin-top:0; margin-bottom: 0; font-size: 12px; }
 select { border: 1px solid #05854A; color: #05854A;  border-radius: 3px; max-width: 260px; }
 .se:not(#se-t).se-document-editor .se-main .se-contents-edit>.se-contents {
 	padding-top: 96px; width: 831px !important; }
@@ -41,7 +41,7 @@ span.fancytree-title { display: initial!important; border: 0!important; line-hei
 .fancytree-title input { display: inline; min-width: 180px; height: 21px; font-size: 13.333px; padding: 0; color: #3875D7;
 	border: 2px solid #3875D7; border-radius: 0; }
 span.fancytree-focused, span.fancytree-title { outline: none!important; /* background-color: inherit; */ } 
-span.fancytree-selected span.fancytree-title, span.fancytree-active span.fancytree-title { background-color: inherit; }
+/* span.fancytree-selected span.fancytree-title, span.fancytree-active span.fancytree-title { background-color: inherit; } */
 span.fancytree-icon, span.fancytree-checkbox, span.fancytree-expander, span.fancytree-custom-icon { margin-top: 3px!important; }
 .fancytree-container > li > span > .fancytree-title { font-weight: bold; }
 .callout a.button { display: none; }

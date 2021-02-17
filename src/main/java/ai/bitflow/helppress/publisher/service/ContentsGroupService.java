@@ -70,7 +70,6 @@ public class ContentsGroupService {
     public String newGroup(ContentsGroupReq params, String userid) {
 		
 		String method = ApplicationConstant.METHOD_ADD;
-		String type = ApplicationConstant.TYPE_GROUP;
 		
 		ContentsGroup item = new ContentsGroup();
 		item.setGroupId(params.getGroupId());

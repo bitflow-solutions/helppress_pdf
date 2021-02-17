@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ai.bitflow.helppress.publisher.constant.ApplicationConstant;
 import ai.bitflow.helppress.publisher.dao.ChangeHistoryDao;
 import ai.bitflow.helppress.publisher.dao.FileDao;
+import ai.bitflow.helppress.publisher.dao.NodeDao;
 import ai.bitflow.helppress.publisher.domain.Contents;
+import ai.bitflow.helppress.publisher.domain.idclass.PkContents;
 import ai.bitflow.helppress.publisher.repository.ContentsRepository;
 import ai.bitflow.helppress.publisher.vo.req.ContentsReq;
 
@@ -29,6 +31,9 @@ public class ContentsService implements ApplicationConstant {
 	private ChangeHistoryDao chdao;
 	
 	@Autowired
+	private NodeDao ndao;
+	
+	@Autowired
 	private FileDao fdao;
 	
 
@@ -39,9 +44,10 @@ public class ContentsService implements ApplicationConstant {
 	 * @return
 	 */
 	@Transactional
-	public String updateContent(ContentsReq params, String key, String userid) {
+	public String updateContent(ContentsReq params, String groupId, String userid) {
 		// id가 폴더이면 childDoc, id가 파일이면 업데이트
-		Optional<Contents> row1 = contentsrepo.findById(Integer.parseInt(key));
+		PkContents pk = new PkContents(groupId, params.getMenuCode());
+		Optional<Contents> row1 = contentsrepo.findById(pk);
 		if (row1.isPresent()) {
 			// 기존 파일 업데이트
 			Contents item1 = row1.get();
@@ -53,7 +59,7 @@ public class ContentsService implements ApplicationConstant {
 			// 변경이력 저장
 			String type     = TYPE_CONTENT;
 			String method   = METHOD_MODIFY;
-			String filePath = key + ApplicationConstant.EXT_CONTENT;
+			String filePath = params.getMenuCode() + ApplicationConstant.EXT_CONTENT;
 
 			long now = Calendar.getInstance().getTimeInMillis();
 			chdao.addHistory(userid, type, method, params.getTitle(), filePath, now + ApplicationConstant.EXT_CONTENT, "도움말 수정");
@@ -64,36 +70,62 @@ public class ContentsService implements ApplicationConstant {
 	}
 	
 	@Transactional
-	public String updatePdfContent(ContentsReq params, String key, String userid) {
+	public String updatePdfContent(ContentsReq params, String groupId, String userid) {
 		// id가 폴더이면 childDoc, id가 파일이면 업데이트
-		Optional<Contents> row1 = contentsrepo.findById(Integer.parseInt(key));
+		PkContents pk = new PkContents(groupId, params.getKey());
+		// id가 폴더이면 childDoc, id가 파일이면 업데이트
+		Optional<Contents> row1 = contentsrepo.findById(pk);
+		logger.debug("isPresent " + row1.isPresent());
+		
+		String type     = TYPE_CONTENT;
+		String filePath = params.getMenuCode() + ApplicationConstant.EXT_PDF;
+		String method = null;
+		Contents item1 = null;
 		if (row1.isPresent()) {
 			// 기존 파일 업데이트
-			Contents item1 = row1.get();
+			item1 = row1.get();
+			if (!params.getKey().equals(params.getMenuCode())) {
+				// 메뉴코드가 바뀐 경우 - 기존 노드 삭제 후 새로 인서트
+				contentsrepo.delete(item1);
+				boolean foundNode = ndao.updateNodeKey(groupId, params.getKey(), params.getMenuCode());
+				pk = new PkContents(groupId, params.getMenuCode());
+				item1 = new Contents();
+				item1.setGroupId(groupId);
+				item1.setId(params.getMenuCode());
+				item1.setAuthor(userid);
+				item1.setType(ApplicationConstant.TYPE_PDF);
+			} else {
+				// 메뉴코드가 동일한 경우
+			}
+			method = METHOD_MODIFY;
+		} else {
+			method = METHOD_ADD;
+			// 새로 저장
+			pk = new PkContents(groupId, params.getMenuCode());
+			item1 = new Contents();
+			item1.setGroupId(groupId);
+			item1.setId(params.getMenuCode());
+			item1.setAuthor(userid);
 			item1.setType(ApplicationConstant.TYPE_PDF);
-			Contents item2 = contentsrepo.save(item1);
-			
-			long now = Calendar.getInstance().getTimeInMillis();
-			fdao.newPdfFile(params, item2, now);
-			// 변경이력 저장
-			String type     = TYPE_CONTENT;
-			String method   = METHOD_MODIFY;
-			String filePath = key + ApplicationConstant.EXT_PDF;
-			
-			chdao.addHistory(userid, type, method, params.getTitle(), filePath, now + ApplicationConstant.EXT_PDF, params.getComment());
-			return String.valueOf(item2.getId());
 		}
-		return null;
+		
+		contentsrepo.save(item1);
+		long now = Calendar.getInstance().getTimeInMillis();
+		fdao.newPdfFile(params, item1, now);
+		// 변경이력 저장
+		chdao.addHistory(userid, type, method, params.getTitle(), filePath, now + ApplicationConstant.EXT_PDF, params.getComment());
+		return item1.getId();
 	}
 	
 	/**
-	 * 
+	 * 현재 미사용
 	 * @param id
 	 * @return
 	 */
 	public Contents getContent(String id) {
-		Optional<Contents> row = contentsrepo.findById(Integer.parseInt(id));
-		return row.isPresent()?row.get():null;
+		// Optional<Contents> row = contentsrepo.findById(Integer.parseInt(id));
+		// return row.isPresent()?row.get():null;
+		return null;
 	}
 	
 	/**

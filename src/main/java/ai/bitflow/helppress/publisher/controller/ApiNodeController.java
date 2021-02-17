@@ -21,7 +21,7 @@ import ai.bitflow.helppress.publisher.vo.res.NodeUpdateRes;
 import ai.bitflow.helppress.publisher.vo.res.result.NodeUpdateResult;
 
 /**
- * 
+ * 도움말 메뉴 트리 조작
  * @author method76
  */
 @RestController
@@ -37,7 +37,7 @@ public class ApiNodeController {
 	private SimpMessagingTemplate broker;
 	
 	/**
-	 * 노드 추가
+	 * 새노드 추가
 	 * @param params
 	 * @return
 	 */
@@ -82,7 +82,7 @@ public class ApiNodeController {
 	}
 	
 	/**
-	 * 노드이름(제목) 변경
+	 * 노드 제목 또는 순서 변경
 	 * @param key
 	 * @param params
 	 * @return
