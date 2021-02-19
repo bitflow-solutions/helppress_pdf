@@ -1,5 +1,6 @@
 package ai.bitflow.helppress.publisher.service;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Optional;
 
@@ -62,7 +63,7 @@ public class ContentsService implements ApplicationConstant {
 			String filePath = params.getMenuCode() + ApplicationConstant.EXT_CONTENT;
 
 			long now = Calendar.getInstance().getTimeInMillis();
-			chdao.addHistory(userid, type, method, params.getTitle(), filePath, now + ApplicationConstant.EXT_CONTENT, "도움말 수정");
+			chdao.addHistory(userid, type, method, params.getTitle(), groupId + "/" + filePath, groupId + "/" + now + ApplicationConstant.EXT_CONTENT, "도움말 수정");
 		
 			return String.valueOf(item2.getId());
 		}
@@ -113,7 +114,7 @@ public class ContentsService implements ApplicationConstant {
 		long now = Calendar.getInstance().getTimeInMillis();
 		fdao.newPdfFile(params, item1, now);
 		// 변경이력 저장
-		chdao.addHistory(userid, type, method, params.getTitle(), filePath, now + ApplicationConstant.EXT_PDF, params.getComment());
+		chdao.addHistory(userid, type, method, params.getTitle(), groupId + "/" + filePath, groupId + "/" + now + ApplicationConstant.EXT_PDF, params.getComment());
 		return item1.getId();
 	}
 	

@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +31,7 @@ import ai.bitflow.helppress.publisher.domain.ChangeHistory;
 import ai.bitflow.helppress.publisher.domain.Contents;
 import ai.bitflow.helppress.publisher.domain.ReleaseHistory;
 import ai.bitflow.helppress.publisher.domain.idclass.PkContents;
+import ai.bitflow.helppress.publisher.repository.ChangeHistoryRepository;
 import ai.bitflow.helppress.publisher.repository.ContentsRepository;
 import ai.bitflow.helppress.publisher.repository.ReleaseHistoryRepository;
 
@@ -58,6 +61,9 @@ public class ReleaseService {
 	
 	@Autowired
 	private ContentsRepository crepo;
+	
+	@Autowired
+	private ChangeHistoryRepository chepo;
 	
 	@Autowired
 	private ChangeHistoryDao chdao;
@@ -282,18 +288,24 @@ public class ReleaseService {
 		int lastDotIdx = item.getFilePath().lastIndexOf(".");
 		// 히스토리에 있는 파일명
 		String SRC_FILENAME  = HISTORY_ROOT_PATH + item.getRealPath();
+		String orgFileName = item.getFilePath().substring(0, lastDotIdx);
 		// 원래 파일명
-		String DEST_FILENAME = item.getFilePath().substring(0, lastDotIdx) + "-" + item.getRealPath();
+		String[] fileStrArr = item.getRealPath().split("/");
+		String realFileName = fileStrArr[fileStrArr.length-1];
+		// String realFileNameNoExt = realFileName.substring(0, realFileName.lastIndexOf(".")); 
+		String DEST_FILENAME = fileStrArr.length>1?fileStrArr[0] + "-" + orgFileName + "-" + realFileName:orgFileName + "-" + realFileName;
 
-		File destFile = new File(SRC_FILENAME);
+		logger.debug("DEST_FILENAME" + DEST_FILENAME);
+		
+		File srcFile = new File(SRC_FILENAME);
 		FileInputStream fis = null;
 		ServletOutputStream out = null;
 		
 		try {
-			fis = new FileInputStream(destFile); 			// file not found exception || 엑세스가 거부되었습니다
+			fis = new FileInputStream(srcFile); 			// file not found exception || 엑세스가 거부되었습니다
 			res.setHeader(HttpHeaders.PRAGMA, 				"no-cache");
 			res.setHeader(HttpHeaders.CONTENT_TYPE, 		"application/zip");
-			res.setHeader(HttpHeaders.CONTENT_LENGTH, 		"" + destFile.length());
+			res.setHeader(HttpHeaders.CONTENT_LENGTH, 		"" + srcFile.length());
 			res.setHeader(HttpHeaders.CONTENT_DISPOSITION, 	"attachment; filename=\"" + DEST_FILENAME + "\"");
 			out = res.getOutputStream();
             FileCopyUtils.copy(fis, out);
@@ -327,9 +339,9 @@ public class ReleaseService {
 	 * @return
 	 */
 	@Transactional
-	public boolean downloadChanged(String[] fileIds, HttpServletResponse res, String username, Boolean release) {
+	public boolean downloadChanged(List<Integer> fileIds, HttpServletResponse res, String username, Boolean release) {
 		
-		if (fileIds==null || fileIds.length<1) {
+		if (fileIds==null || fileIds.size()<1) {
 			return false;
 		}
 		
@@ -348,22 +360,27 @@ public class ReleaseService {
 			return false;
 		}
 		
+		// 
+		List<ChangeHistory> changes = chepo.findAllByIdInOrderByUpdDtDesc(fileIds);
+		
 		int i = 0;
-		for (String fileId : fileIds) {
+		for (ChangeHistory change : changes) {
+			logger.debug("fileId " + change.toString());
 			// 도움말그룹인 경우 파일만, 도움말인 경우 파일과 폴더
-			File file = new File(SRC_FOLDER + fileId);
+			File file = new File(SRC_FOLDER + change.getFilePath());
 			if (file.exists() && file.isFile()) {
 				if (i==0) {
 					ZipUtil.packEntry(file, destFile);
 				} else {
-					ZipUtil.addEntry(destFile, fileId, file);
+					// duplicate entry: stock.html
+					ZipUtil.addEntry(destFile, change.getFilePath(), file);
 				}
-				String resourcePath = SRC_FOLDER + ApplicationConstant.UPLOAD_REL_PATH + File.separator + fileId;
-				File resourceDir = new File(resourcePath);
-				if (resourceDir.exists() && resourceDir.isDirectory()) {
-					// 도움말 하위 폴더
-					ZipUtil.addEntry(resourceDir, destFile, ApplicationConstant.UPLOAD_REL_PATH + File.separator + fileId);
-				}	
+//				String resourcePath = SRC_FOLDER + ApplicationConstant.UPLOAD_REL_PATH + File.separator + fileId;
+//				File resourceDir = new File(resourcePath);
+//				if (resourceDir.exists() && resourceDir.isDirectory()) {
+//					// 도움말 하위 폴더
+//					ZipUtil.addEntry(resourceDir, destFile, ApplicationConstant.UPLOAD_REL_PATH + File.separator + fileId);
+//				}	
 			}
 			i++;
 		}

@@ -1,6 +1,8 @@
 package ai.bitflow.helppress.publisher.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -90,8 +92,13 @@ public class ApiReleaseController {
 			}
 		} else {
 			String[] fileIdsArr = fileIds.split(",");
-			if (fileIdsArr!=null && fileIdsArr.length>0) {
-				rservice.downloadChanged(fileIdsArr, res, username, release);
+			List<Integer> idList =  new ArrayList<>();
+			for (String id : fileIdsArr) {
+				idList.add(Integer.parseInt(id));
+			}
+			
+			if (idList!=null && idList.size()>0) {
+				rservice.downloadChanged(idList, res, username, release);
 			}
 		}
 		

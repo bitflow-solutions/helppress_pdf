@@ -90,12 +90,12 @@ public class NodeService {
 		
 		Sequences seqs = new Sequences();
 		seqrepo.save(seqs);
-		
-		if (params.getFolder()==null || params.getFolder()==false) {
-			// 폴더의 경우 INSERT하여 고유키(시퀀스)만 추출한 뒤 테이블에서 바로 삭제
-			contentsrepo.save(item1);
-		}
-		
+
+//		if (params.getFolder()==null || params.getFolder()==false) {
+//			// 폴더의 경우 INSERT하여 고유키(시퀀스)만 추출한 뒤 테이블에서 바로 삭제
+//			contentsrepo.save(item1);
+//		}
+
 		// 테이블 저장 후 ID 반환 (JavaScript 트리에서 노드 key로 사용됨)
 		Integer seq = seqs.getId();
 		String key = item1.getId();
@@ -157,7 +157,7 @@ public class NodeService {
 			}
 			// 2) 파일 삭제
 			boolean success = fdao.deleteFile(params.getGroupId() + File.separator + params.getKey());
-			chdao.addHistory(userid, type, method, params.getTitle(), item2.getFilePath(), null, ApplicationConstant.REASON_DELETE_CONTENT);
+			chdao.addHistory(userid, type, method, params.getTitle(), params.getGroupId() + File.separator + item2.getFilePath(), null, ApplicationConstant.REASON_DELETE_CONTENT);
 			// 3) Todo: 첨부 이미지 폴더 삭제
 		} else {
 			type = ApplicationConstant.TYPE_FOLDER;

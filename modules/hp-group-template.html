@@ -120,14 +120,12 @@ function goHashLocation() {
 	if (key && key.length>0) {
 	  var selectedNode = _tree.getNodeByKey(key);
 	  selectedNode.setActive();
-	  // $("#contents-detail").attr("src", key + ".html");
-      $("#contents-detail").attr("src", "resources/viewer/web/viewer.html?file=../../../" + key + ".pdf");
+	  loadPage(key);
 	} else {
 		$.ui.fancytree.getTree().visit(function(node) {
 		  if (typeof(node.folder)=='undefined') {
 			  node.setActive();
-			  $("#contents-detail").attr("src", "resources/viewer/web/viewer.html?file=../../../" + key + ".pdf");
-			  location.href = "#" + node.key;
+			  loadPage(key);
 			  return false;
 		  }
 		});
@@ -150,6 +148,14 @@ function expandAll() {
 function collapseAll() {
   $.ui.fancytree.getTree().expandAll(false);
 }
+function loadPage(key) {
+  var filename = location.href.split("/").slice(-1);
+  console.log('filename ' + filename);
+  var groupid = (filename + '').split(".")[0];
+  console.log('groupid ' + groupid);
+  $("#contents-detail").attr("src", "resources/viewer/web/viewer.html?file=../../../" + groupid + "/" + key + ".pdf");
+  location.href = "#" + key;
+}
 function initTree() {
   $('#tree').fancytree({
     extensions: ["filter"],
@@ -170,8 +176,7 @@ function initTree() {
       if (node.folder) {
     	  node.toggleExpanded();
       } else {
-	      $("#contents-detail").attr("src", "resources/viewer/web/viewer.html?file=../../../" + key + ".pdf");
-    	  location.href = "#" + key;
+      	loadPage(key);
       } 
     },
     close: function(e, data){

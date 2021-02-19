@@ -25,7 +25,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 	<div class="button-group float-right">
 		<a class="button small success hollow" id="btn-download-all">전체다운로드</a>
 		<a class="button small secondary hollow" id="btn-download-changed" {{^clist}}disabled{{/clist}}>선택다운로드</a>
-		<a class="button small success hollow" id="btn-record-release">배포버전처리</a>
+		<!--  <a class="button small success hollow" id="btn-record-release">배포버전처리</a> -->
 	</div>
 </div>
 
@@ -60,7 +60,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 			<tbody>
    				{{#clist}}
 				<tr>
-					<td class="text-center"><input type="checkbox" id="{{fileId}}" class="changed-files" name="fileIds" value="{{fileId}}" {{#del}}disabled{{/del}}/></td>
+					<td class="text-center"><input type="checkbox" id="{{id}}" class="changed-files" name="fileIds" value="{{id}}" {{#del}}disabled{{/del}}/></td>
 					<td class="text-center">{{method}}</td>
 					<td>{{#title}}{{title}}{{/title}}</td>
 					<td>{{#filePath}}{{filePath}}{{/filePath}}</td>
@@ -70,7 +70,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 				{{/clist}}
    				{{^clist}}
 				<tr>
-					<td class="text-center" colspan="3">내역이 없습니다</td>
+					<td class="text-center" colspan="6">내역이 없습니다</td>
 				</tr>
 				{{/clist}}
 			</tbody>
@@ -108,7 +108,7 @@ tbody th, tbody td { padding: 0.1rem 0.625rem 0.1rem; }
 				{{/rlist}}
 				{{^rlist}}
 				<tr>
-					<td class="text-center" colspan="3">내역이 없습니다</td>
+					<td class="text-center" colspan="5">내역이 없습니다</td>
 				</tr>
 				{{/rlist}}
 			</tbody>
