@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+<title>happy+ 도움말 - DB금융투자</title>
+<link href="./resources/img/favicon.ico" rel="shortcut icon" type="image/ico" />
+<link rel="stylesheet" href="./resources/css/noto-sans-kr.css">
+<link rel="stylesheet" href="./resources/css/foundation.css">
+<link rel="stylesheet" href="./resources/foundation-icons/foundation-icons.css" />
+<link rel="stylesheet" href="./resources/jquery/fancytree/skin-lion/ui.fancytree.css">
+<link rel="stylesheet" href="./resources/css/global.css">
+<style>
+</style>
+</head>
+
+<body>
+
+<div class="grid-y medium-grid-frame">
+	
+	<!-- Navigation -->
+	<div class="title-bar" data-responsive-toggle="realEstateMenu" data-hide-for="small" style="display: none;">
+	  <button class="menu-icon" type="button" data-toggle></button>
+	  <div class="title-bar-title">Menu</div>
+	</div>
+	
+	<div>
+		<div class="top-bar">
+		  <div class="top-bar-left">
+		    <ul class="menu" data-responsive-menu="accordion">
+		      <li class="menu-text">			
+		      	<div class="logo-img"></div>
+			  </li>
+		      <li class="is-active" >
+		      	<a href="./stock.html">증권</a>
+		      </li>
+		      <li >
+		      	<a href="./foreign.html">해외주식</a>
+		      </li>
+		    </ul>
+		  </div>
+		  <div class="top-bar-right">
+		  	<img src="./resources/img/btn-home.png" onclick="location.href='./';">
+		  	<img src="./resources/img/btn-prev.png" onclick="history.go(-1);">
+		  	<img src="./resources/img/btn-next.png" onclick="history.go(1);">
+		  	<img src="./resources/img/btn-top.png" onclick="goScroll()">
+		  </div>
+		</div>
+	</div>
+	
+	<div class="bf-body-wrapper">
+	
+	<div class="grid-x contents-grid-wrapper">
+		
+		<!-- 좌측 컨텐츠그룹 선택 및 메뉴 구조 TREE -->
+		<div class="cell tree-wrapper">
+			<div id="search-wrapper">
+				<input id="input-search" name="search" placeholder="검색어 입력" autocomplete="off" maxlength="50">
+				<button id="btnResetSearch">&times;</button>
+				<img id="img-search" src="./resources/img/btn_search.png">
+				<span id="matches"></span>
+			</div>
+			<div id="tree"></div>
+		</div>
+		
+		<!-- 컨텐츠 상세내용 --> <!-- 706px for A4 -->
+		<div class="cell contents-wrapper">
+		  <div class="grid-x" style="height: 100%;">
+		    <iframe id="contents-detail" name="ifrm" class="cell" width="100%" height="100%" frameborder="0" border="0" style="border:0;" src="./resources/viewer/web/empty.html"></iframe>
+		  </div>
+	    </div>
+		
+	</div>
+	
+	</div>
+	
+	<div class="cell shrink footer">
+	  <div class="grid-x">
+		  <div class="footer-text cell small-10 text-left">
+		  	<p>위 내용은 제도변경 또는 성능개선 등의 사유로 사전예고없이 변경될 수 있습니다.</p>
+		  	<p>ⓒ DB Financial Investment</p>
+		  </div>
+		  <div class="cell small-2"><img src="./resources/img/logo.svg" style="width: 105px; margin-right: 36px; margin-top: 3px;" class="float-right"></div>
+	  </div>
+	</div>
+
+</div>
+
+<script src="./resources/jquery/jquery-3.5.1.min.js"></script>
+<script src="./resources/jquery/jquery-ui.min.js"></script>
+<script src="./resources/jquery/fancytree/jquery.fancytree.min.js"></script>
+<script src="./resources/jquery/fancytree/modules/jquery.fancytree.filter.js"></script>
+<script>
+/*<![CDATA[*/
+var SOURCE = [{"folder":true,"key":"!D8Bb","title":"\uC0C8 \uD3F4\uB3546","children":[{"folder":null,"key":"1234","title":"\uC0C8 \uB3C4\uC6C0\uB9D0 (\uB05D)","children":null,"order":0}],"order":0},{"folder":null,"key":"43434","title":"\uC0C8 \uB3C4\uC6C0\uB9D05","children":null,"order":0},{"folder":null,"key":"Z8000","title":"\uC0C8 \uB3C4\uC6C0\uB9D04","children":null,"order":0},{"folder":null,"key":"!9kIm","title":"\uC0C8 \uB3C4\uC6C0\uB9D03","children":null,"order":0},{"folder":null,"key":"Z1010","title":"\uC0C8 \uB3C4\uC6C0\uB9D02","children":null,"order":0},{"folder":null,"key":"!tQp3","title":"\uC0C8 \uB3C4\uC6C0\uB9D02","children":null,"order":0}];
+window.onhashchange = goHashLocation;
+window.alert = function(message) {
+	var x = document.getElementById("snackbar");
+	x.className = "show";
+	x.innerText = message;
+	setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+}
+function loadContents(id) {
+	$(".spinner").show();
+	location.href = "/doc#" + id;
+}
+function search(id) {
+	var keyword = $("#input-search").val();
+	if (keyword && keyword.length>0) {
+		$.ui.fancytree.getTree().filterNodes(keyword, {autoExpand: true, mode: 'dimm', leavesOnly: false});
+		$("#btnResetSearch").attr("disabled", false);
+		$("#btnResetSearch").show();
+	} else {
+		$.ui.fancytree.getTree().clearFilter()
+		$("#btnResetSearch").hide();
+  }
+}
+function goHashLocation() {
+  var key = window.location.hash.substr(1)?window.location.hash.substr(1):'';
+  var _tree = $.ui.fancytree.getTree();
+	if (key && key.length>0) {
+	  var selectedNode = _tree.getNodeByKey(key);
+	  selectedNode.setActive();
+	  loadPage(key);
+	} else {
+		$.ui.fancytree.getTree().visit(function(node) {
+		  if (typeof(node.folder)=='undefined') {
+			  node.setActive();
+			  loadPage(key);
+			  return false;
+		  }
+		});
+	}
+}
+function initEventListener() {
+  $(".fancytree-folder .fancytree-title").attr('tabindex', '-1');
+  $("#btn-expand-all").click(expandAll);
+  $("#btn-collapse-all").click(collapseAll);
+  $("#input-search").keyup(search);
+  $("#btnResetSearch").click(function(e){
+	$("#input-search").val("");
+	$.ui.fancytree.getTree().clearFilter();
+	$("#btnResetSearch").hide();
+  });
+}
+function expandAll() {
+  $.ui.fancytree.getTree().expandAll();
+}
+function collapseAll() {
+  $.ui.fancytree.getTree().expandAll(false);
+}
+function loadPage(key) {
+  var filename = location.href.split("/").slice(-1);
+  console.log('filename ' + filename);
+  var groupid = (filename + '').split(".")[0];
+  console.log('groupid ' + groupid);
+  $("#contents-detail").attr("src", "resources/viewer/web/viewer.html?file=../../../" + groupid + "/" + key + ".pdf");
+  location.href = "#" + key;
+}
+function initTree() {
+  $('#tree').fancytree({
+    extensions: ["filter"],
+	quicksearch: true,
+	filter: {
+      counter: false,
+	  autoExpand: true,
+	  mode: "hide" // "dimm", "hide"
+	},
+    checkbox: false,
+    selectMode: 3,
+    source: SOURCE, // JSON.parse(SOURCE),
+    nodata: '검색된 도움말이 없습니다',
+    click: function(e, data){
+      var node = data.node;
+      var key = node.key;
+      console.log('click ' + key + ' typeof(node.folder) ' + typeof(node.folder));
+      if (node.folder) {
+    	  node.toggleExpanded();
+      } else {
+      	loadPage(key);
+      } 
+    },
+    close: function(e, data){
+      initEvents();
+    }
+  });
+}
+function goScroll() {
+  var scrollWrapper = document.getElementById('contents-detail').contentWindow.document.getElementById('viewerContainer');
+  scrollWrapper.scrollTop = 0;
+}
+
+$(function(){
+  initTree();
+  initEventListener();
+  goHashLocation();
+});
+/*]]>*/
+</script>
+
+</body>
+</html>

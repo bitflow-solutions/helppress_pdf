@@ -8,8 +8,9 @@ logs
 !**/src/test/**
 application.pid
 db/*.lock.db
-export/
+export/**/*.pdf
 release/
+history/
 
 ### STS ###
 .apt_generated

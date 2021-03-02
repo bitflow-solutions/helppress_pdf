@@ -1,6 +1,5 @@
 package ai.bitflow.helppress.publisher.service;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Optional;
 
@@ -45,9 +44,9 @@ public class ContentsService implements ApplicationConstant {
 	 * @return
 	 */
 	@Transactional
-	public String updateContent(ContentsReq params, String groupId, String userid) {
+	public String updateContent(ContentsReq params, String groupId, String key, String userid) {
 		// id가 폴더이면 childDoc, id가 파일이면 업데이트
-		PkContents pk = new PkContents(groupId, params.getMenuCode());
+		PkContents pk = new PkContents(groupId, key);
 		Optional<Contents> row1 = contentsrepo.findById(pk);
 		if (row1.isPresent()) {
 			// 기존 파일 업데이트

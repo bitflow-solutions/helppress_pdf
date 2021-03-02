@@ -1,0 +1,47 @@
+@page { size: A4 portrait; }
+
+html { padding: 25.4mm; }
+
+.se:not(#se-t).se-document-editor .se-main .se-contents-edit>.se-contents {
+	background-color: white;
+    padding: 48px;
+    width: 831px !important; /* 720px, 795px, 831px */ 
+}
+    
+.sticky { position: fixed; top: 0; right: 0; height: 32px; width: 32px; background-color: #05854A; color: white; cursor: pointer; }
+
+.fi-print { position: absolute; font-size: 20px; margin-left: 7px; top: 3px; }
+
+@media (-ms-high-contrast: none), (-ms-high-contrast: active) {
+	/* IE styles here */
+	body { zoom: 88%; }
+}
+
+@media only screen {
+	html {
+		font-family: '¸¼Àº °íµñ', 'µ¸¿ò', '±¼¸²', Arial, Helvetica, sans-serif; font-size: 11pt;
+		width: 650px; min-height: 930px; border: 1px solid #c9c9c9; margin: 19px auto; /* padding: 96px; */ 
+		box-shadow: 1px 1px 3px 3px #efefef; 
+	}
+}
+
+@media only screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	/* IE screen styles here */
+	html { width: 595px; }
+	body > .se-contents { width: 650px !important; }
+}
+
+@media only print {
+	html { width: 170mm; padding: 25.4mm; } /* width: 210mm; */
+	.no-print { visibility: hidden; }
+}
+
+@media only print and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+	html, body { padding: 0; }
+}
+
+	
+@supports not (-ms-high-contrast: none) {
+   /* Non-IE styles here */
+   body > .se-contents { width: inherit !important; }
+}

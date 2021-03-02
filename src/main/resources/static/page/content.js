@@ -160,6 +160,10 @@ function initEvents() {
 	$("#btn-modify-complete").click(function(e) {
 		// 도움말 수정완료 버튼 클릭
 		$("#btn-modify-complete").hide();
+		/*
+		var element = document.getElementById('element-to-print');
+		html2pdf(element);
+		*/
 		$(".spinner").show();
 		var url = URL_API_CONTENT + selectedGroupId + "/" + selectedContentId;
 		$.ajax({
@@ -167,7 +171,7 @@ function initEvents() {
 			method: "PUT",
 			data: { 
 				title: selectedContentTitle,
-				content: editor.getPublishingHtml(),
+				content: editor.html.get(),
 			}
 		})
 		.done(function(msg) {
@@ -353,13 +357,50 @@ function loadTree() {
  * (HTML 도움말인 경우) 도움말 수정
  */
 function editContent() {
+  // $("#contents-detail").attr("src", "/editor/html/popular/iframe.html");
+  console.log('editContent');
+  $("#contents-detail").hide();
+  $("#editor-wrapper").show();
+  if (!editor) {
+	  /* iframe: true */
+	  editor = new FroalaEditor('div#editor-wrapper', {
+		events: {
+	     "image.beforeUpload": function(files) {
+	     var editor = this;
+	      if (files.length) {
+	        // Create a File Reader.
+	        var reader = new FileReader();
+	        // Set the reader to insert images when they are loaded.
+	        reader.onload = function(e) {
+	          var result = e.target.result;
+	          editor.image.insert(result, null, null, editor.image.get());
+	        };
+	        // Read image as base64.
+	        reader.readAsDataURL(files[0]);
+	      }
+	      editor.popups.hideAll();
+	      // Stop default upload chain.
+	      return false;
+	     }
+	   }
+	  }, function () {
+	    console.log('editor ' + editor.html.get());
+	  });
+  }
+  $("#contents-detail").hide();
+  $("#editor-wrapper").show();
+  $("#btn-modify-complete").show();
+  $("#btn-modify").hide();
+  $("#btn-download").hide();
+  $("#btn-delete").hide();
+  /*
   var url = URL_API_CONTENT + selectedGroupId + "/" + selectedContentId;
   $.ajax({
 	url: url,
 	method: "GET"
   })
   .done(function(msg) {
-    editor.openHTML(msg.result.contents);
+    // editor.openHTML(msg.result.contents);
     $("#contents-detail").hide();
 	$("#editor-wrapper").show();
     $("#btn-modify-complete").show();
@@ -367,6 +408,7 @@ function editContent() {
     $("#btn-download").hide();
     $("#btn-delete").hide();
   });
+  */ 
 }
 
 /**
@@ -380,13 +422,14 @@ function loadPage(key) {
 		method: "GET",
 		statusCode: {
 	        404: function(res, status, jqXHR) {
-	            $("#btn-modify").text("글쓰기");
+	            // $("#btn-modify").text("글쓰기");
 	            $("#btn-delete").hide();
 	            $("#btn-download").hide();
 				$("#contents-detail").attr("src", "/404.html");
 	        },
 	        200: function(res, status, err) {
-	            $("#btn-modify").text("수정");
+	            // $("#btn-modify").text("HTML작성");
+				$("#btn-modify").show();
 	            $("#btn-delete").show();
 	            $("#btn-download").show();
 	        }           

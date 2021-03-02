@@ -20,7 +20,6 @@ import ai.bitflow.helppress.publisher.vo.req.ContentsReq;
 import ai.bitflow.helppress.publisher.vo.req.UpdateNodeReq;
 import ai.bitflow.helppress.publisher.vo.res.ContentsRes;
 import ai.bitflow.helppress.publisher.vo.res.NodeUpdateRes;
-import ai.bitflow.helppress.publisher.vo.res.StringRes;
 import ai.bitflow.helppress.publisher.vo.res.result.ContentResult;
 import ai.bitflow.helppress.publisher.vo.res.result.NodeUpdateResult;
 
@@ -70,8 +69,8 @@ public class ApiContentController {
 	 * @param id
 	 * @return
 	 */
-	@PutMapping("/{groupid}")
-	public ContentsRes updateContent(ContentsReq params, @PathVariable String groupid, HttpSession sess) {
+	@PutMapping("/{groupid}/{id}")
+	public ContentsRes updateContent(ContentsReq params, @PathVariable String groupid, @PathVariable String id, HttpSession sess) {
 		logger.debug("params " + params.toString());
 		ContentsRes ret1 = new ContentsRes();
 		ContentResult result = new ContentResult();
@@ -81,7 +80,7 @@ public class ApiContentController {
 		} else {
 			if (params.getFile1()==null) {
 				// 에디터로 HTML 수정한 경우
-				cservice.updateContent(params, groupid, username);
+				cservice.updateContent(params, groupid, id, username);
 			} else {
 				// PDF파일 업로드 한 경우
 				cservice.updatePdfContent(params, groupid, username);

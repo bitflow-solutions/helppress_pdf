@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.URL;
@@ -24,11 +25,13 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
+import org.w3c.dom.Document;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.openhtmltopdf.extend.FSStream;
 import com.openhtmltopdf.extend.HttpStreamFactory;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 import ai.bitflow.helppress.publisher.constant.ApplicationConstant;
 import ai.bitflow.helppress.publisher.domain.Contents;
@@ -140,55 +143,57 @@ public class FileDao {
 			boolean success = dir.mkdirs();
 		}
 		 
-		BufferedWriter writer = null;
-		FileOutputStream fop = null;
-		String destHtmlFilename = UPLOAD_ROOT_PATH + String.format("%05d" , item.getId()) + ApplicationConstant.EXT_HTML;
-//		String destPdfFilename  = UPLOAD_ROOT_PATH + String.format("%05d" , item.getId()) + ".pdf";
+//		BufferedWriter writer = null;
+		OutputStream  os = null;
+		String destPdfFilename = UPLOAD_ROOT_PATH + item.getGroupId() + File.separator + item.getId() + ApplicationConstant.EXT_PDF;
 		try {
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(destHtmlFilename), "UTF-8"));
+//			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(destPdfFilename), "UTF-8"));
 			StringBuilder content = new StringBuilder();
 			content.append(getHeader(item.getTitle()));
 			content.append(item.getContent());
 			content.append(getFooter());
-			writer.write(content.toString());
 			
-//			PdfRendererBuilder builder = new PdfRendererBuilder();
-//			fop = new FileOutputStream(destPdfFilename);
-//			builder.toStream(fop);
-//			File fontMalgun = new File(FileDao.class.getResource("/static/fonts/malgun.TTF").getFile());
-//			builder.useFont(fontMalgun, "맑은 고딕");
-//			builder.useFont(fontMalgun, "Arial");
-//			builder.useFont(fontMalgun, "함초롬바탕");
-//			builder.useFont(fontMalgun, "굴림");
-//			builder.useFont(fontMalgun, "돋움");
-//			builder.useFont(fontMalgun, "바탕");
-//			builder.useFont(fontMalgun, "휴먼명조");
-//			builder.useFont(fontMalgun, "궁서");
+			PdfRendererBuilder builder = new PdfRendererBuilder();
+			os = new FileOutputStream(destPdfFilename);
+			File fontMalgun = new File(FileDao.class.getResource("/static/fonts/MALGUN.TTF").getFile());
+			builder.useFont(fontMalgun, "sans-serif");
+			builder.useFont(fontMalgun, "맑은 고딕");
+			builder.useFont(fontMalgun, "Arial");
+			builder.useFont(fontMalgun, "함초롬바탕");
+			builder.useFont(fontMalgun, "굴림");
+			builder.useFont(fontMalgun, "굴림체");
+			builder.useFont(fontMalgun, "돋움");
+			builder.useFont(fontMalgun, "돋움체");
+			builder.useFont(fontMalgun, "바탕");
+			builder.useFont(fontMalgun, "휴먼명조");
+			builder.useFont(fontMalgun, "궁서");
+			builder.useFont(fontMalgun, "궁서체");
 //			builder.useFont(new File(FileDao.class.getResource("/static/fonts/NanumGothic.ttf").getFile()), "나눔고딕");
 //			builder.useFont(new File(FileDao.class.getResource("/static/fonts/H2HDRM.TTF").getFile()), "HY헤드라인M");
-//			
-//			W3CDom w3cDom = new W3CDom();
-//			String baseUri = "file:///" + (dir.getAbsolutePath() + "/export").replace("\\", "/");
-//			logger.debug("baseUri " + baseUri);
-//			Document w3cDoc = w3cDom.fromJsoup(Jsoup.parse(content.toString(), baseUri));
-//			builder.withW3cDocument(w3cDoc, baseUri);
-//			builder.useHttpStreamImplementation(new OkHttpStreamFactory());
-//            builder.run();
+			
+			W3CDom w3cDom = new W3CDom();
+			String baseUri = "file:///" + (dir.getAbsolutePath() + "/export").replace("\\", "/");
+			Document w3cDoc = w3cDom.fromJsoup(Jsoup.parse(content.toString(), baseUri));
+			builder.withUri(destPdfFilename);
+			builder.toStream(os);
+			builder.withW3cDocument(w3cDoc, baseUri);
+			builder.useHttpStreamImplementation(new OkHttpStreamFactory());
+            builder.run();
 		    return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		} finally {
-			if (writer!=null) {
+			if (os!=null) {
 				try {
-					writer.close();
+					os.close();
 				} catch (IOException e) { }
 			}
-			if (fop!=null) {
-				try {
-					fop.close();
-				} catch (IOException e) { }
-			}
+//			if (fop!=null) {
+//				try {
+//					fop.close();
+//				} catch (IOException e) { }
+//			}
 		}
 	}
 	
@@ -429,17 +434,22 @@ public class FileDao {
 		if (title==null) {
 			title = "온라인도움말";
 		}
-		String style = "";
+		String style = "body { font-family: '맑은 고딕'; }";
+//		String style = "";
 		return "<!doctype html><html><head><meta charset=\"utf-8\">"
 				 + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no\">"
 				 + "<title>" + title + "</title>"
-				 + "<link rel=\"stylesheet\" href=\"./resources/foundation-icons/foundation-icons.css\" />"
-				 + "<link rel=\"stylesheet\" href=\"./resources/css/page.css\" />"
+//				 + "<link rel=\"stylesheet\" href=\"./resources/foundation-icons/foundation-icons.css\" />"
+//				 + "<link rel=\"stylesheet\" href=\"./resources/css/page.css\" />"
 				 + "<style>" + style + "</style></head><body>";
 	}
 
+//	private String getFooter() {
+//		return "<div class=\"sticky no-print\" onclick=\"window.print()\"><i class=\"fi-print\"></i></div></body></html>";
+//	}
+	
 	private String getFooter() {
-		return "<div class=\"sticky no-print\" onclick=\"window.print()\"><i class=\"fi-print\"></i></div></body></html>";
+		return "</body></html>";
 	}
 	
 	public org.w3c.dom.Document html5ParseDocument(String urlStr, int timeoutMs) throws IOException {
