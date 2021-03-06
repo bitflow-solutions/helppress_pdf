@@ -1,4 +1,4 @@
-var editor, selectedGroupId, selectedContentId, selectedContentTitle, inputMenuCode, htmlToOpen = null, isRTF = false;
+var editor, selectedGroupId, selectedContentId, selectedContentTitle, inputMenuCode, contentType, htmlToOpen = null, isRTF = false;
 var SOURCE = [];
 var _tree = null;
 const URL_API_NODE    = "/api/v1/ecm/node";
@@ -114,15 +114,13 @@ function initTree() {
 	  if (!node.folder || node.folder===false) {
 		// 폴더가 아닌경우
 	    selectedContentTitle = node.title;
-	  	$("#btn-delete").show();
-	  	$("#btn-download").show();
-	  	$("#btn-pdf-upload").show();
 	  	// 도움말 표시
 	  	loadPage(node.key);
 		$("#contents-detail").scrollTop();
 	  } else {
 	    // 폴더인 경우
 	  	$("#btn-delete").show();
+	    $("#btn-modify").hide();
 	  	$("#btn-download").hide();
 	  	$("#btn-pdf-upload").hide();
 	  }
@@ -131,8 +129,27 @@ function initTree() {
   _tree = $.ui.fancytree.getTree();
 }
 
+function commentPopUp(contentType) {
+  console.log('contentType ' + contentType);
+  contentType = contentType;
+  if (contentType=='PDF') {
+    $(".fi-page-filled").empty().html("&nbsp;&nbsp;PDF 파일 업로드")
+  } else {
+    $(".fi-page-filled").empty().html("&nbsp;&nbsp;HTML 작성")
+  }
+  if (selectedContentId && selectedContentId.length>3 && selectedContentId.charAt(0)!=='!' ) {
+	$("#bf-menu-code").val(selectedContentId);
+	$("#bf-menu-code").attr("readonly", true);
+  } else {
+	$("#bf-menu-code").val("");
+	$("#bf-menu-code").attr("readonly", false);
+  }
+}
+
 function initEvents() {
-	$("#btn-modify").click(editContent);
+	$("#btn-modify").click(function() {
+		commentPopUp('HTML');	
+	});
 	$("#btn-delete").click(deleteContent);
 	$("#btn-download").click(downloadContent);
 	$("#btn-expand-all").click(expandAll);
@@ -142,14 +159,7 @@ function initEvents() {
 		$("#bf-modal-comment").foundation('close');
 	});
 	$("#btn-pdf-upload").click(function() {
-	  console.log('selectedContentId ' + selectedContentId);
-	  if (selectedContentId && selectedContentId.length>3 && selectedContentId.charAt(0)!=='!' ) {
-		$("#bf-menu-code").val(selectedContentId);
-		$("#bf-menu-code").attr("readonly", true);
-	  } else {
-		$("#bf-menu-code").val("");
-		$("#bf-menu-code").attr("readonly", false);
-	  }
+	  commentPopUp('PDF');
     });
 	$("#bf-menu-code").keyup(function(event) {
 		if (!(event.keyCode>=37 && event.keyCode<=40)) {
@@ -160,10 +170,6 @@ function initEvents() {
 	$("#btn-modify-complete").click(function(e) {
 		// 도움말 수정완료 버튼 클릭
 		$("#btn-modify-complete").hide();
-		/*
-		var element = document.getElementById('element-to-print');
-		html2pdf(element);
-		*/
 		$(".spinner").show();
 		var url = URL_API_CONTENT + selectedGroupId + "/" + selectedContentId;
 		$.ajax({
@@ -176,11 +182,7 @@ function initEvents() {
 		})
 		.done(function(msg) {
 		  if (msg.result) {
-			  var key = msg.result.key;
-			  console.log('key ' + key);
-			  if (key && key.length>0) {
-				loadPage(key);
-			  }
+			loadPage(selectedContentId);
 		  }
 		  $("#btn-modify").show();
 		  $("#btn-delete").show();
@@ -360,6 +362,7 @@ function editContent() {
   // $("#contents-detail").attr("src", "/editor/html/popular/iframe.html");
   console.log('editContent');
   $("#contents-detail").hide();
+  $("#btn-pdf-upload").hide();
   $("#editor-wrapper").show();
   if (!editor) {
 	  /* iframe: true */
@@ -416,6 +419,11 @@ function editContent() {
  */
 function loadPage(key) {
   $("#editor-wrapper").hide();
+  $("#btn-delete").show();
+  $("#btn-download").show();
+  $("#btn-modify").show();
+  $("#btn-pdf-upload").show();
+  $("#btn-modify-complete").hide();
   $("#contents-detail").attr("src", "/viewer/web/viewer.html?file=/" + selectedGroupId + "/" + key + ".pdf");
   $.ajax({
 		url: "/" + selectedGroupId + "/" + key + ".pdf",
@@ -442,7 +450,6 @@ function loadPage(key) {
  * 업로드 처리
  */
 function doUpload() {
-	console.log('$("#bf-menu-code").attr("readonly") ' + $("#bf-menu-code").attr("readonly"));
   $("#err-menu-code").hide();
   $("#err-dupe-id").hide();
   $("#err-no-comment").hide();
@@ -458,7 +465,11 @@ function doUpload() {
 	$("#err-menu-code").hide();
   	$("#err-no-comment").hide();
 	$("#bf-modal-comment").foundation('close');
-    $("#pdfFile").click();	
+	if (contentType=='PDF') {
+    	$("#pdfFile").click();
+    } else {
+	  editContent();
+    }	
   }
 }
 
